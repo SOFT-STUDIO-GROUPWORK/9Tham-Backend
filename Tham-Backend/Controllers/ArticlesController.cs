@@ -7,7 +7,7 @@ namespace Tham_Backend.Controllers;
 public class ArticlesController : ControllerBase
 {
     // GET: api/articles
-    [HttpGet("/")]
+    [HttpGet("")]
     public IActionResult Test()
     {
         return Ok("None");
