@@ -12,7 +12,7 @@ using Tham_Backend.Data;
 namespace Tham_Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220412114551_CreateInitial")]
+    [Migration("20220412153702_CreateInitial")]
     partial class CreateInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

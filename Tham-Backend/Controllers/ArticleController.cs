@@ -5,7 +5,7 @@ namespace Tham_Backend.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class ArticlesController : ControllerBase
+public class ArticleController : ControllerBase
 {
     private static readonly List<Article> Articles = new()
     {
