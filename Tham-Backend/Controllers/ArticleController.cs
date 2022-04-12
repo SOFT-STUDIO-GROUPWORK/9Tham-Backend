@@ -1,36 +1,30 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tham_Backend.Models;
 
 namespace Tham_Backend.Controllers;
 
-[Route("[controller]")]
+[Route("/article/[controller]")]
 [ApiController]
 public class ArticleController : ControllerBase
 {
-    private static readonly List<Article> Articles = new()
+    private readonly DataContext _context;
+
+    public ArticleController(DataContext conetext)
     {
-        new Article
-        {
-            Id = 123456, Title = "สาหวาดดีค้าบ ท่านสมาชิก", Content = "จัดมาดิ๊!", Visible = true,
-            BloggerId = 987654
-        },
-        new Article
-        {
-            Id = 123457, Title = "แล้วผมจะไปแคร์ เหี้ยอะไร", Content = "ออกไป๊!", Visible = true,
-            BloggerId = 987654
-        }
-    };
+        _context = conetext;
+    }
 
     [HttpGet]
     public async Task<ActionResult<List<Article>>> GetAllArticle()
     {
-        return Ok(Articles);
+        return Ok(await _context.Articles.ToListAsync());
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Article>> GetArticle(int id)
     {
-        var article = Articles.Find(article => article.Id == id);
+        var article = await _context.Articles.FindAsync(id);
         if (article == null) return BadRequest("Article not found!");
         return Ok(article);
     }
@@ -38,28 +32,31 @@ public class ArticleController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<List<Article>>> AddArticle([FromBody] Article article)
     {
-        Articles.Add(article);
-        return Ok(Articles);
+        _context.Articles.Add(article);
+        await _context.SaveChangesAsync();
+        return Ok(article);
     }
 
     [HttpPut]
     public async Task<ActionResult<List<Article>>> UpdateArticle([FromBody] Article request)
     {
-        var article = Articles.Find(article => article.Id == request.Id);
-        if (article == null) return BadRequest("Article not found!");
-        article.Content = request.Content;
-        article.Title = request.Title;
-        article.Visible = request.Visible;
-        article.BloggerId = request.BloggerId;
-        return Ok(article);
+        var dbArticle = await _context.Articles.FindAsync(request.Id);
+        if (dbArticle == null) return BadRequest("Article not found!");
+        dbArticle.Content = request.Content;
+        dbArticle.Title = request.Title;
+        dbArticle.Visible = request.Visible;
+        dbArticle.BloggerId = request.BloggerId;
+        await _context.SaveChangesAsync();
+        return Ok(dbArticle);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<Article>> DeleteArticle(int id)
     {
-        var article = Articles.Find(article => article.Id == id);
-        if (article == null) return BadRequest("Article not found!");
-        Articles.Remove(article);
-        return Ok(article);
+        var dbArticle = await _context.Articles.FindAsync(id);
+        if (dbArticle == null) return BadRequest("Article not found!");
+        _context.Articles.Remove(dbArticle);
+        await _context.SaveChangesAsync();
+        return Ok(dbArticle);
     }
 }

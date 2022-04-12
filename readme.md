@@ -12,13 +12,6 @@ Install dotnet tool
   dotnet tool install --global dotnet-ef
 ```
 
-Migration
-
-```bash
-dotnet-ef migrations add ${name}
-dotnet-ef database update
-```
-
 Pull Microsoft SQL Server image
 
 ```bash
@@ -29,6 +22,13 @@ Run the container (with docker volumn to persist data)
 
 ```bash
   docker run --rm --name sql_server -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=1234abCD' -e "MSSQL_PID=Express" -p 1433:1433 -v sql_persist_volume:/var/opt/mssql -d mcr.microsoft.com/mssql/server
+```
+
+Migration
+
+```bash
+  dotnet-ef migrations add ${name}
+  dotnet-ef database update
 ```
 
 Exec sqlcmd client
