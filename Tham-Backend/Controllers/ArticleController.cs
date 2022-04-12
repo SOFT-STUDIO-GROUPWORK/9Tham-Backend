@@ -10,9 +10,9 @@ public class ArticleController : ControllerBase
 {
     private readonly DataContext _context;
 
-    public ArticleController(DataContext conetext)
+    public ArticleController(DataContext context)
     {
-        _context = conetext;
+        _context = context;
     }
 
     [HttpGet]
