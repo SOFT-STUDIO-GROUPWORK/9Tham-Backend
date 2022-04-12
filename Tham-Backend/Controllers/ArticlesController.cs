@@ -4,21 +4,32 @@ using Tham_Backend.Models;
 
 namespace Tham_Backend.Controllers;
 
-[Route("/article/[controller]")]
+[Route("[controller]")]
 [ApiController]
-public class ArticleController : ControllerBase
+public class ArticlesController : ControllerBase
 {
     private readonly DataContext _context;
 
-    public ArticleController(DataContext context)
+    public ArticlesController(DataContext context)
     {
         _context = context;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<List<Article>>> GetAllArticle()
+    [HttpGet("paginate/{page}")]
+    public async Task<ActionResult<List<Article>>> GetArticles(int page)
     {
-        return Ok(await _context.Articles.ToListAsync());
+        var perPage = 10f;
+        var pageCount = Math.Ceiling(_context.Articles.Count() / perPage);
+        if (pageCount == 0) pageCount = 1;
+        var articles = await _context.Articles.Skip((page - 1) * (int) perPage).Take(page).ToListAsync();
+        var response = new ArticleResponse
+        {
+            Articles = articles,
+            CurrentPage = page,
+            Pages = (int) pageCount
+        };
+
+        return Ok(response);
     }
 
     [HttpGet("{id}")]
