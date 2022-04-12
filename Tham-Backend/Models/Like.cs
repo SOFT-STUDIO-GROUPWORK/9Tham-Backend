@@ -2,6 +2,7 @@
 
 public class Like
 {
-    public int BloggerId { get; set; }//FK
-    public int ArticleId { get; set; }//FK
+    public int Id { get; set; } //FK
+
+    public int ArticleId { get; set; } //FK
 }

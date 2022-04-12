@@ -5,6 +5,7 @@ namespace Tham_Backend.Models;
 public class Article
 {
     public int Id { get; set; }
+    
     public DateTime Published { get; set; }
 
     [Required] [StringLength(200)] public string Title { get; set; }
