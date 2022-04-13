@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Tham_Backend.Models;
 using Tham_Backend.Repositories;
 
@@ -15,7 +14,7 @@ public class ArticlesController : ControllerBase
         _repository = repository;
     }
     
-    [HttpGet("")]
+    [HttpGet]
     public async Task<ActionResult<List<ArticleModel>>> GetArticles()
     {
         var articles = await _repository.GetArticlesAsync();
@@ -40,7 +39,7 @@ public class ArticlesController : ControllerBase
         return Ok(article);
     }
 
-    [HttpPost("")]
+    [HttpPost]
     public async Task<ActionResult<List<ArticleModel>>> AddArticle([FromBody] ArticleModel article)
     {
         var articleId = await _repository.AddBookAsync(article);
