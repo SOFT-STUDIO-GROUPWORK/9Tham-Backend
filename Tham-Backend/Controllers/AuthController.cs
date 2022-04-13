@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Tham_Backend.Models;
+using Tham_Backend.Services;
 
 namespace Tham_Backend.Controllers;
 
@@ -17,6 +18,7 @@ public class AuthController : ControllerBase
     public static BloggerModel user = new();
 
     private readonly IConfiguration _configuration;
+    private readonly IUserService _userService;
 
     // private readonly IBloggerRepository _repository;
     //
@@ -25,9 +27,18 @@ public class AuthController : ControllerBase
     //     _repository = repository;
     // }
 
-    public AuthController(IConfiguration configuration)
+    public AuthController(IConfiguration configuration, IUserService userService)
     {
         _configuration = configuration;
+        _userService = userService;
+    }
+
+    [HttpGet]
+    [Authorize]
+    public ActionResult<string> WhoAmI()
+    {
+        var email = _userService.GetEmail();
+        return Ok(email);
     }
 
     private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
