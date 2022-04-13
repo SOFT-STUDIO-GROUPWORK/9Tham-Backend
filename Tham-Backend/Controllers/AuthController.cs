@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Tham_Backend.Models;
@@ -10,6 +11,7 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "Admin")]
 public class AuthController : ControllerBase
 {
     public static BloggerModel user = new();
@@ -48,6 +50,10 @@ public class AuthController : ControllerBase
 
     private string CreateToken(BloggerModel user)
     {
+        // Find user from database
+
+
+        // Check role and create claim with role
         List<Claim> claims = new()
         {
             new Claim(ClaimTypes.Email, user.Email),
@@ -70,6 +76,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [AllowAnonymous]
     public async Task<ActionResult<BloggerModel>> Register(UserDTO request)
     {
         CreatePasswordHash(request.Password, out var passwordHash, out var passwordSalt);
@@ -83,6 +90,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<ActionResult<string>> Login(UserDTO request)
     {
         if (user.Email != request.Email) return BadRequest("User not found!");
