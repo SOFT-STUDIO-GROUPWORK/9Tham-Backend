@@ -15,6 +15,7 @@ public class AuthController : ControllerBase
     public static BloggerModel user = new();
 
     private readonly IConfiguration _configuration;
+
     // private readonly IBloggerRepository _repository;
     //
     // public AuthController(IBloggerRepository repository)
@@ -60,7 +61,7 @@ public class AuthController : ControllerBase
 
         var token = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.Now.AddHours(1),
+            expires: DateTime.Now.AddHours(2),
             signingCredentials: creds);
 
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
