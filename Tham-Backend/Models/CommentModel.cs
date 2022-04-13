@@ -2,7 +2,7 @@
 
 namespace Tham_Backend.Models;
 
-public class Comment
+public class CommentModel
 {
     public int Id { get; set; }
 

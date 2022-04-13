@@ -1,5 +1,6 @@
 global using Tham_Backend.Data;
 using Microsoft.EntityFrameworkCore;
+using Tham_Backend.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,15 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+builder.Services.AddTransient<IArticleRepository, ArticleRepository>();
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddCors(option =>
+{
+    option.AddDefaultPolicy(optBuilder =>
+    {
+        optBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -27,6 +37,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors();
 
 app.UseAuthorization();
 

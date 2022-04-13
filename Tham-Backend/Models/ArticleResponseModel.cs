@@ -1,8 +1,8 @@
 ﻿namespace Tham_Backend.Models;
 
-public class ArticleResponse
+public class ArticleResponseModel
 {
-    public List<Article> Articles { get; set; } = new();
+    public List<ArticleModel> Articles { get; set; } = new();
 
     public int Pages { get; set; }
 

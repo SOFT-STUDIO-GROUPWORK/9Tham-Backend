@@ -1,6 +1,6 @@
 ﻿namespace Tham_Backend.Models;
 
-public class Like
+public class LikeModel
 {
     public int Id { get; set; } //FK
 

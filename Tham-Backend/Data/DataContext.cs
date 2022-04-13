@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Tham_Backend.Models;
 
 namespace Tham_Backend.Data;
 
@@ -9,5 +8,5 @@ public class DataContext : DbContext
     {
     }
 
-    public DbSet<Article> Articles { get; set; }
+    public DbSet<Articles> Articles { get; set; }
 }

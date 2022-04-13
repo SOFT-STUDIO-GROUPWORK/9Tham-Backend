@@ -1,6 +1,6 @@
 ﻿namespace Tham_Backend.Models;
 
-public class ArticleTag
+public class ArticleTagModel
 {
     public int Id { get; set; }
 

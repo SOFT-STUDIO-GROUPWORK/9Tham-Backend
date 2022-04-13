@@ -2,7 +2,7 @@
 
 namespace Tham_Backend.Models;
 
-public class Blogger
+public class BloggerModel
 {
     public int Id { get; set; }
 

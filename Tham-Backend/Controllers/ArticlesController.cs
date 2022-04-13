@@ -1,73 +1,63 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tham_Backend.Models;
+using Tham_Backend.Repositories;
 
 namespace Tham_Backend.Controllers;
 
-[Route("[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class ArticlesController : ControllerBase
 {
-    private readonly DataContext _context;
-
-    public ArticlesController(DataContext context)
+    private readonly IArticleRepository _repository;
+    public ArticlesController(IArticleRepository repository)
     {
-        _context = context;
+        _repository = repository;
+    }
+    
+    [HttpGet("")]
+    public async Task<ActionResult<List<ArticleModel>>> GetArticles()
+    {
+        var articles = await _repository.GetArticlesAsync();
+        return Ok(articles);
     }
 
     [HttpGet("paginate/{page}")]
-    public async Task<ActionResult<List<Article>>> GetArticles(int page)
+    public async Task<ActionResult<List<ArticleModel>>> GetArticles([FromRoute]int page)
     {
-        var perPage = 10f;
-        var pageCount = Math.Ceiling(_context.Articles.Count() / perPage);
-        if (pageCount == 0) pageCount = 1;
-        var articles = await _context.Articles.Skip((page - 1) * (int) perPage).Take(page).ToListAsync();
-        var response = new ArticleResponse
-        {
-            Articles = articles,
-            CurrentPage = page,
-            Pages = (int) pageCount
-        };
-
-        return Ok(response);
+        var articles = await _repository.GetPaginatedArticles(page);
+        return Ok(articles);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Article>> GetArticle(int id)
+    public async Task<ActionResult<ArticleModel>> GetArticle([FromRoute]int id)
     {
-        var article = await _context.Articles.FindAsync(id);
-        if (article == null) return BadRequest("Article not found!");
+        var article = await _repository.GetArticleByIdAsync(id);
+        if (article == null)
+        {
+            return NotFound("Article not found!");
+        }
         return Ok(article);
     }
 
-    [HttpPost]
-    public async Task<ActionResult<List<Article>>> AddArticle([FromBody] Article article)
+    [HttpPost("")]
+    public async Task<ActionResult<List<ArticleModel>>> AddArticle([FromBody] ArticleModel article)
     {
-        _context.Articles.Add(article);
-        await _context.SaveChangesAsync();
-        return Ok(article);
+        var articleId = await _repository.AddBookAsync(article);
+        return CreatedAtAction(nameof(GetArticle),new{id=articleId},articleId);
     }
 
-    [HttpPut]
-    public async Task<ActionResult<List<Article>>> UpdateArticle([FromBody] Article request)
+    [HttpPut("{id}")]
+    public async Task<ActionResult<List<ArticleModel>>> UpdateArticle([FromRoute]int id,[FromBody] ArticleModel articleModel)
     {
-        var dbArticle = await _context.Articles.FindAsync(request.Id);
-        if (dbArticle == null) return BadRequest("Article not found!");
-        dbArticle.Content = request.Content;
-        dbArticle.Title = request.Title;
-        dbArticle.Visible = request.Visible;
-        dbArticle.BloggerId = request.BloggerId;
-        await _context.SaveChangesAsync();
-        return Ok(dbArticle);
+        await _repository.UpdateArticleAsync(id, articleModel);
+        return Ok();
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Article>> DeleteArticle(int id)
+    public async Task<ActionResult<ArticleModel>> DeleteArticle([FromRoute]int id)
     {
-        var dbArticle = await _context.Articles.FindAsync(id);
-        if (dbArticle == null) return BadRequest("Article not found!");
-        _context.Articles.Remove(dbArticle);
-        await _context.SaveChangesAsync();
-        return Ok(dbArticle);
+        await _repository.DeleteArticleAsync(id);
+        return Ok();
     }
 }

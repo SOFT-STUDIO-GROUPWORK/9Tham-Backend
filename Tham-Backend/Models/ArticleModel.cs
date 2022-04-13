@@ -2,15 +2,15 @@
 
 namespace Tham_Backend.Models;
 
-public class Article
+public class ArticleModel
 {
     public int Id { get; set; }
     
     public DateTime Published { get; set; }
 
-    [Required] [StringLength(200)] public string Title { get; set; }
+    public string Title { get; set; }
 
-    [Required] [StringLength(4000)] public string Content { get; set; }
+    public string Content { get; set; }
 
     public bool Visible { get; set; }
 

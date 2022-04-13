@@ -2,7 +2,7 @@
 
 namespace Tham_Backend.Models;
 
-public class Tag
+public class TagModel
 {
     public int Id { get; set; }
 
