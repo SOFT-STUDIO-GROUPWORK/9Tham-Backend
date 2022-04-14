@@ -9,4 +9,5 @@ public class DataContext : DbContext
     }
 
     public DbSet<Articles> Articles { get; set; }
+    public DbSet<Bloggers> Bloggers { get; set; }
 }

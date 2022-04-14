@@ -1,18 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Tham_Backend.Models;
+﻿namespace Tham_Backend.Models;
 
 public class BloggerModel
 {
     public int Id { get; set; }
+    public virtual string FirstName { get; set; }
+    public virtual string LastName { get; set; }
 
-    [Required] [StringLength(200)] public virtual string FirstName { get; set; }
+    public virtual string NickName { get; set; }
 
-    [Required] [StringLength(200)] public virtual string LastName { get; set; }
-
-    [Required] [StringLength(150)] public virtual string NickName { get; set; }
-
-    [Required] [StringLength(256)] public virtual string Email { get; set; }
+    public virtual string Email { get; set; }
 
     public UserRoles Role { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Tham_Backend.Data;
 using Tham_Backend.Models;
 
 namespace Tham_Backend.Repositories;
@@ -57,22 +58,17 @@ public class ArticleRepository : IArticleRepository
 
     public async Task UpdateArticleAsync(int articleId, ArticleModel articleModel)
     {
-        var article = await _context.Articles.FindAsync(articleId);
-
-        if (article is not null)
+        var newArticle = new Articles()
         {
-            var newArticle = new Articles()
-            {
-                Id = articleId,
-                Title = articleModel.Title,
-                Content = articleModel.Content,
-                BloggerId = article.BloggerId,
-                Visible = articleModel.Visible,
-            };
+            Id = articleId,
+            Title = articleModel.Title,
+            Content = articleModel.Content,
+            BloggerId = articleModel.BloggerId,//XXX:Should not be changed
+            Visible = articleModel.Visible,
+        };
 
-            _context.Articles.Update(newArticle);
-            await _context.SaveChangesAsync();
-        }
+        _context.Articles.Update(newArticle);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteArticleAsync(int articleId)

@@ -38,7 +38,10 @@ public class ArticlesController : ControllerBase
     public async Task<ActionResult<ArticleModel>> GetArticle([FromRoute] int id)
     {
         var article = await _repository.GetArticleByIdAsync(id);
-        if (article == null) return NotFound("Article not found!");
+        if (article is null)
+        {
+            return NotFound("Article not found!");
+        }
         return Ok(article);
     }
 
