@@ -69,6 +69,7 @@ public class BloggerRepository : IBloggerRepository
     public async Task<BloggerModel?> GetByEmailAsync(string email)
     {
         var record = await _context.Bloggers.SingleOrDefaultAsync(blogger => blogger.Email == email);
+
         return _mapper.Map<BloggerModel>(record);
     }
 }

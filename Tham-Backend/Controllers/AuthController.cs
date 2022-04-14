@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
     private readonly IUserService _userService;
 
 
-    public AuthController(IBloggerRepository repository, IConfiguration configuration, IUserService userService,
+    public AuthController(IBloggerRepository repository, IUserService userService,
         IAuthService authService)
     {
         _userService = userService;
@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<ActionResult<BloggerModel>> Register([FromBody] RegisterDTO request)
+    public async Task<ActionResult<BloggerModel>> Register(RegisterDTO request)
     {
         var user = await _repository.GetByEmailAsync(request.Email);
         if (user is not null) return Conflict("User already register!");
@@ -63,7 +63,7 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<string>> Login(LoginDTO request)
     {
         var user = await _repository.GetByEmailAsync(request.Email);
-        if (user.Email != request.Email) return BadRequest("User not found!");
+        if (user is null) return NotFound("User not found!");
 
         if (!_authService.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
             return BadRequest("Wrong password.");
