@@ -4,10 +4,10 @@ using Tham_Backend.Models;
 
 namespace Tham_Backend.Helpers;
 
-public class ArticleMapper : Profile
+public class BloggerMapper: Profile
 {
-    public ArticleMapper()
+    public BloggerMapper()
     {
-        CreateMap<Articles, ArticleModel>().ReverseMap();
+        CreateMap<Bloggers, BloggerModel>().ReverseMap();
     }
 }

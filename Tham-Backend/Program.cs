@@ -1,4 +1,4 @@
-global using Tham_Backend.Data;
+using Tham_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Tham_Backend.Repositories;
 

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Tham_Backend.Models;
 using Tham_Backend.Repositories;
 
 namespace Tham_Backend.Controllers;
@@ -14,30 +15,42 @@ public class BloggerController : ControllerBase
     }
     
     [HttpGet]
-    public IEnumerable<string> Get()
+    public async Task<ActionResult<List<BloggerModel>>> GetBloggers()
     {
-        return new string[] { "value1", "value2" };
+        var bloggers = await _repository.GetBloggersAsync();
+        return Ok(bloggers);
     }
     
     [HttpGet("{id}")]
-    public string Get(int id)
+    public async Task<ActionResult<BloggerModel>> GetBloggerById([FromRoute]int id)
     {
-        return "value";
+        var blogger = await _repository.GetBloggerByIdAsync(id);
+        if (blogger is null)
+        {
+            return NotFound("Blogger not found!");
+        }
+        return Ok(blogger);
     }
     
     [HttpPost]
-    public void Post([FromBody] string value)
+    public async Task<IActionResult> AddBlogger([FromBody] BloggerModel bloggerModel)
     {
+        var bloggerId = await _repository.AddBloggerAsync(bloggerModel);
+        return CreatedAtAction(nameof(GetBloggers), new { id = bloggerId }, bloggerId);
     }
     
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    public async Task<IActionResult> UpdateBlogger([FromRoute]int id, [FromBody] BloggerModel bloggerModel)
     {
+        await _repository.UpdateBloggerAsync(id, bloggerModel);
+        return Ok();
     }
     
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public async Task<IActionResult> DeleteBlogger([FromRoute]int id)
     {
+        await _repository.DeleteBloggerAsync(id);
+        return Ok();
     }
 }
 
