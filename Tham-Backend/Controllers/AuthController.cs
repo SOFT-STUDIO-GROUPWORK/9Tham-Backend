@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<ActionResult<BloggerModel>> Register(RegisterDTO request)
+    public async Task<ActionResult<string>> Register(RegisterDTO request)
     {
         var user = await _repository.GetByEmailAsync(request.Email);
         if (user is not null) return Conflict("User already register!");
@@ -47,7 +47,7 @@ public class AuthController : ControllerBase
             FirstName = request.FirstName,
             LastName = request.LastName,
             NickName = request.NickName,
-            Email = request.NickName,
+            Email = request.Email,
             Role = request.Role,
             IsBanned = false,
             PasswordHash = passwordHash,
@@ -55,7 +55,7 @@ public class AuthController : ControllerBase
         };
 
         await _repository.AddBloggerAsync(newUser);
-        return Ok();
+        return Ok(request.Email);
     }
 
     [HttpPost("login")]

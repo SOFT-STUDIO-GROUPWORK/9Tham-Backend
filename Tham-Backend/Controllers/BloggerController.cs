@@ -7,7 +7,7 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")]
+[Authorize]
 public class BloggerController : ControllerBase
 {
     private readonly IBloggerRepository _repository;
@@ -18,7 +18,6 @@ public class BloggerController : ControllerBase
     }
 
     [HttpGet]
-    [AllowAnonymous]
     public async Task<ActionResult<List<BloggerModel>>> GetBloggers()
     {
         var bloggers = await _repository.GetBloggersAsync();
@@ -26,7 +25,6 @@ public class BloggerController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [AllowAnonymous]
     public async Task<ActionResult<BloggerModel>> GetBloggerById([FromRoute] int id)
     {
         var blogger = await _repository.GetBloggerByIdAsync(id);
@@ -35,6 +33,7 @@ public class BloggerController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateBlogger([FromRoute] int id, [FromBody] BloggerModel bloggerModel)
     {
         await _repository.UpdateBloggerAsync(id, bloggerModel);
@@ -42,6 +41,7 @@ public class BloggerController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteBlogger([FromRoute] int id)
     {
         await _repository.DeleteBloggerAsync(id);
