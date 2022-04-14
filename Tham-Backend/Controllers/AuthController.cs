@@ -92,7 +92,6 @@ public class AuthController : ControllerBase
     {
         CreatePasswordHash(request.Password, out var passwordHash, out var passwordSalt);
 
-
         user.Email = request.Email;
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
