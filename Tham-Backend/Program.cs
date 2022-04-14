@@ -1,6 +1,7 @@
 global using Tham_Backend.Data;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Tham_Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
