@@ -7,7 +7,7 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")]
+[Authorize]
 public class ArticlesController : ControllerBase
 {
     private readonly IArticleRepository _repository;
@@ -18,7 +18,6 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet]
-    [AllowAnonymous]
     public async Task<ActionResult<List<ArticleModel>>> GetArticles()
     {
         var articles = await _repository.GetArticlesAsync();
@@ -26,7 +25,6 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet("paginate/{page}")]
-    [AllowAnonymous]
     public async Task<ActionResult<List<ArticleModel>>> GetArticles([FromRoute] int page)
     {
         var articles = await _repository.GetPaginatedArticles(page);
@@ -34,18 +32,15 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [AllowAnonymous]
     public async Task<ActionResult<ArticleModel>> GetArticle([FromRoute] int id)
     {
         var article = await _repository.GetArticleByIdAsync(id);
-        if (article is null)
-        {
-            return NotFound("Article not found!");
-        }
+        if (article is null) return NotFound("Article not found!");
         return Ok(article);
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<List<ArticleModel>>> AddArticle([FromBody] ArticleModel article)
     {
         var articleId = await _repository.AddBookAsync(article);
@@ -53,6 +48,7 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<List<ArticleModel>>> UpdateArticle([FromRoute] int id,
         [FromBody] ArticleModel articleModel)
     {
@@ -61,6 +57,7 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ArticleModel>> DeleteArticle([FromRoute] int id)
     {
         await _repository.DeleteArticleAsync(id);
