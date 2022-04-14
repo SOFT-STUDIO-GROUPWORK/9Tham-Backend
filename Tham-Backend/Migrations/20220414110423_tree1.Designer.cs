@@ -12,8 +12,8 @@ using Tham_Backend.Data;
 namespace Tham_Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220414085025_BloggerEmailValidation")]
-    partial class BloggerEmailValidation
+    [Migration("20220414110423_tree1")]
+    partial class tree1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

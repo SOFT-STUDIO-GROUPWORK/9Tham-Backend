@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tham_Backend.Migrations
 {
-    public partial class AddBloggers : Migration
+    public partial class tree1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            /*migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "Articles",
                 columns: table => new
                 {
@@ -24,7 +24,7 @@ namespace Tham_Backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Articles", x => x.Id);
-                });*/
+                });
 
             migrationBuilder.CreateTable(
                 name: "Bloggers",
