@@ -9,4 +9,5 @@ public interface IBloggerRepository
     Task<int> AddBloggerAsync(BloggerModel bloggerModel);
     Task UpdateBloggerAsync(int bloggerId, BloggerModel bloggerModel);
     Task DeleteBloggerAsync(int bloggerId);
+    Task<BloggerModel?> GetByEmailAsync(string email);
 }
