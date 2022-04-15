@@ -7,7 +7,7 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class ArticlesController : ControllerBase
 {
     private readonly IArticleRepository _repository;
@@ -35,7 +35,10 @@ public class ArticlesController : ControllerBase
     public async Task<ActionResult<ArticleModel>> GetArticle([FromRoute] int id)
     {
         var article = await _repository.GetArticleByIdAsync(id);
-        if (article is null) return NotFound("Article not found!");
+        if (article is null)
+        {
+            return NotFound("Article not found!");
+        }
         return Ok(article);
     }
 

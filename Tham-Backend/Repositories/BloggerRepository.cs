@@ -39,21 +39,33 @@ public class BloggerRepository : IBloggerRepository
 
     public async Task UpdateBloggerAsync(int bloggerId, BloggerModel bloggerModel)
     {
-        //XXX: Some field should not be able to set (consult first)
+        /*
         var newBlogger = new Bloggers
         {
-            Id = bloggerId,
+            Id = bloggerId,//XXX: Don't change
             FirstName = bloggerModel.FirstName,
             LastName = bloggerModel.LastName,
             NickName = bloggerModel.NickName,
             Email = bloggerModel.Email,
             Role = bloggerModel.Role,
             IsBanned = bloggerModel.IsBanned,
-            PasswordHash = bloggerModel.PasswordHash,
-            PasswordSalt = bloggerModel.PasswordSalt
+            PasswordHash = bloggerModel.PasswordHash,//XXX: Don't change
+            PasswordSalt = bloggerModel.PasswordSalt//XXX: Don't change
         };
         _context.Bloggers.Update(newBlogger);
-        await _context.SaveChangesAsync();
+        */
+        
+        var blogger = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Id == bloggerId);
+        if (blogger is not null)
+        {
+            blogger.FirstName = bloggerModel.FirstName;
+            blogger.LastName = bloggerModel.LastName;
+            blogger.NickName = bloggerModel.NickName;
+            blogger.Email = bloggerModel.Email;
+            blogger.Role = bloggerModel.Role;
+            blogger.IsBanned = bloggerModel.IsBanned;
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task DeleteBloggerAsync(int bloggerId)

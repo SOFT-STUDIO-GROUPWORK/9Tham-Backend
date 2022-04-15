@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tham_Backend.Models;
 using Tham_Backend.Repositories;
@@ -6,6 +7,7 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class LikesController : ControllerBase
 {
     private readonly ILikeRepository _repository;
