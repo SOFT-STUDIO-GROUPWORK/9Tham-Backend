@@ -46,7 +46,7 @@ public class ArticleRepository : IArticleRepository
         return _mapper.Map<ArticleModel>(article);
     }
     
-    public async Task<int> AddBookAsync(ArticleModel articleModel)
+    public async Task<int> AddArticleAsync(ArticleModel articleModel)
     {
         var article = _mapper.Map<Articles>(articleModel);
 

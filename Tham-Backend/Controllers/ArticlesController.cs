@@ -43,7 +43,7 @@ public class ArticlesController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<List<ArticleModel>>> AddArticle([FromBody] ArticleModel article)
     {
-        var articleId = await _repository.AddBookAsync(article);
+        var articleId = await _repository.AddArticleAsync(article);
         return CreatedAtAction(nameof(GetArticle), new {id = articleId}, articleId);
     }
 
