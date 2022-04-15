@@ -1,26 +1,55 @@
-﻿using Tham_Backend.Models;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Tham_Backend.Models;
 
 namespace Tham_Backend.Repositories;
 
 public class LikeRepository: ILikeRepository
 {
-    public Task<List<LikeModel>> GetLikesAsync()
+    private readonly DataContext _context;
+    private readonly IMapper _mapper;
+    public LikeRepository(DataContext context, IMapper mapper)
     {
-        throw new NotImplementedException();
+        _context = context;
+        _mapper = mapper;
+    }
+    public async Task<List<LikeModel>> GetLikesAsync()
+    {
+        var records = await _context.Likes.ToListAsync();
+        return _mapper.Map<List<LikeModel>>(records);
     }
 
-    public Task<int> AddLikeAsync(LikeModel likeModel)
+    public async Task<LikeModel?> GetLikeByIdAsync(int likeId)
     {
-        throw new NotImplementedException();
+        var record = await _context.Likes.FindAsync(likeId);
+        return _mapper.Map<LikeModel>(record);
     }
 
-    public Task UpdateLikeAsync(int likeId, LikeModel likeModel)
+    public async Task<int> AddLikeAsync(LikeModel likeModel)
     {
-        throw new NotImplementedException();
+        var like = _mapper.Map<Likes>(likeModel);
+
+        await _context.Likes.AddAsync(like);
+        await _context.SaveChangesAsync();
+
+        return like.Id;
     }
 
-    public Task DeleteLikeAsync(int likeId)
+    public async Task UpdateLikeAsync(int likeId, LikeModel likeModel)
     {
-        throw new NotImplementedException();
+        likeModel.Id = likeId;
+        var newLike = _mapper.Map<Likes>(likeModel);
+        _context.Likes.Update(newLike);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteLikeAsync(int likeId)
+    {
+        var like = new Likes
+        {
+            Id = likeId
+        };
+        _context.Likes.Remove(like);
+        await _context.SaveChangesAsync();
     }
 }

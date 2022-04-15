@@ -1,26 +1,55 @@
-﻿using Tham_Backend.Models;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Tham_Backend.Models;
 
 namespace Tham_Backend.Repositories;
 
 public class CommentRepository:ICommentRepository
 {
-    public Task<List<CommentModel>> GetCommentsAsync()
+    private readonly DataContext _context;
+    private readonly IMapper _mapper;
+    public CommentRepository(DataContext context, IMapper mapper)
     {
-        throw new NotImplementedException();
+        _context = context;
+        _mapper = mapper;
+    }
+    public async Task<List<CommentModel>> GetCommentsAsync()
+    {
+        var records = await _context.Comments.ToListAsync();
+        return _mapper.Map<List<CommentModel>>(records);
     }
 
-    public Task<int> AddCommentAsync(CommentModel commentModel)
+    public async Task<CommentModel?> GetCommentByIdAsync(int commentId)
     {
-        throw new NotImplementedException();
+        var record = await _context.Comments.FindAsync(commentId);
+        return _mapper.Map<CommentModel>(record);
     }
 
-    public Task UpdateCommentAsync(int commentId, CommentModel commentModel)
+    public async Task<int> AddCommentAsync(CommentModel commentModel)
     {
-        throw new NotImplementedException();
+        var comment = _mapper.Map<Comments>(commentModel);
+
+        await _context.Comments.AddAsync(comment);
+        await _context.SaveChangesAsync();
+
+        return comment.Id;
     }
 
-    public Task DeleteCommentAsync(int commentId)
+    public async Task UpdateCommentAsync(int commentId, CommentModel commentModel)
     {
-        throw new NotImplementedException();
+        commentModel.Id = commentId;
+        var newComment = _mapper.Map<Comments>(commentModel);
+        _context.Comments.Update(newComment);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteCommentAsync(int commentId)
+    {
+        var comment = new Comments
+        {
+            Id = commentId
+        };
+        _context.Comments.Remove(comment);
+        await _context.SaveChangesAsync();
     }
 }

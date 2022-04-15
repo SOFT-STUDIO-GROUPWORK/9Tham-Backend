@@ -24,6 +24,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddTransient<IArticleRepository, ArticleRepository>();
 builder.Services.AddTransient<IBloggerRepository, BloggerRepository>();
 builder.Services.AddTransient<ITagRepository, TagRepository>();
+builder.Services.AddTransient<ILikeRepository, LikeRepository>();
+builder.Services.AddTransient<IArticleTagRepository, ArticleTagRepository>();
+builder.Services.AddTransient<ICommentRepository, CommentRepository>();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddCors(option =>
 {

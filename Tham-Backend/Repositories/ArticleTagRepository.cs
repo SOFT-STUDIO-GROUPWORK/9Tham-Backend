@@ -1,26 +1,55 @@
-﻿using Tham_Backend.Models;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Tham_Backend.Models;
 
 namespace Tham_Backend.Repositories;
 
 public class ArticleTagRepository : IArticleTagRepository
 {
-    public Task<List<ArticleTagModel>> GetArticleTagsAsync()
+    private readonly DataContext _context;
+    private readonly IMapper _mapper;
+    public ArticleTagRepository(DataContext context, IMapper mapper)
     {
-        throw new NotImplementedException();
+        _context = context;
+        _mapper = mapper;
+    }
+    public async Task<List<ArticleTagModel>> GetArticleTagsAsync()
+    {
+        var records = await _context.ArticleTags.ToListAsync();
+        return _mapper.Map<List<ArticleTagModel>>(records);
     }
 
-    public Task<int> AddArticleTagAsync(ArticleTagModel articleTagModel)
+    public async Task<ArticleTagModel?> GetArticleTagByIdAsync(int articleTagId)
     {
-        throw new NotImplementedException();
+        var record = await _context.ArticleTags.FindAsync(articleTagId);
+        return _mapper.Map<ArticleTagModel>(record);
     }
 
-    public Task UpdateArticleTagAsync(int articleTagId, ArticleTagModel articleTagModel)
+    public async Task<int> AddArticleTagAsync(ArticleTagModel articleTagModel)
     {
-        throw new NotImplementedException();
+        var articleTag = _mapper.Map<ArticleTags>(articleTagModel);
+
+        await _context.ArticleTags.AddAsync(articleTag);
+        await _context.SaveChangesAsync();
+
+        return articleTag.Id;
     }
 
-    public Task DeleteArticleTagAsync(int articleTagId)
+    public async Task UpdateArticleTagAsync(int articleTagId, ArticleTagModel articleTagModel)
     {
-        throw new NotImplementedException();
+        articleTagModel.Id = articleTagId;
+        var newArticleTag = _mapper.Map<ArticleTags>(articleTagModel);
+        _context.ArticleTags.Update(newArticleTag);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteArticleTagAsync(int articleTagId)
+    {
+        var articleTag = new ArticleTags()
+        {
+            Id = articleTagId
+        };
+        _context.ArticleTags.Remove(articleTag);
+        await _context.SaveChangesAsync();
     }
 }
