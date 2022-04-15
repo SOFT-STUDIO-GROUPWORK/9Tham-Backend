@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tham_Backend.Models;
 using Tham_Backend.Repositories;
@@ -5,6 +6,7 @@ using Tham_Backend.Repositories;
 namespace Tham_Backend.Controllers;
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "Admin")]
 public class TagsController : ControllerBase
 {
     private readonly ITagRepository _repository;

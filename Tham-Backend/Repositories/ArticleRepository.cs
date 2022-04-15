@@ -42,7 +42,12 @@ public class ArticleRepository : IArticleRepository
 
     public async Task<ArticleModel?> GetArticleByIdAsync(int articleId)
     {
-        var article = await _context.Articles.FindAsync(articleId);
+        var article = await _context.Articles.FirstOrDefaultAsync(x=>x.Id==articleId);
+        if (article is not null)
+        {
+            article.ViewCount++;
+            await _context.SaveChangesAsync();
+        }
         return _mapper.Map<ArticleModel>(article);
     }
     
@@ -58,6 +63,7 @@ public class ArticleRepository : IArticleRepository
 
     public async Task UpdateArticleAsync(int articleId, ArticleModel articleModel)
     {
+        /*
         var newArticle = new Articles()
         {
             Id = articleId,
@@ -65,10 +71,19 @@ public class ArticleRepository : IArticleRepository
             Content = articleModel.Content,
             BloggerId = articleModel.BloggerId,//XXX:Should not be changed
             Visible = articleModel.Visible,
+            ViewCount = articleModel.ViewCount//XXX:Should not be changed
         };
 
         _context.Articles.Update(newArticle);
-        await _context.SaveChangesAsync();
+        */
+        var article = await _context.Articles.FirstOrDefaultAsync(x=>x.Id == articleId);
+        if (article is not null)
+        {
+            article.Title = articleModel.Title;
+            article.Content = articleModel.Content;
+            article.Visible = articleModel.Visible;
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task DeleteArticleAsync(int articleId)

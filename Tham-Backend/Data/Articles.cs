@@ -13,6 +13,7 @@ public class Articles
     [Required] [StringLength(4000)] public string Content { get; set; }
 
     public bool Visible { get; set; }
+    public int ViewCount { get; set; }
 
     public int BloggerId { get; set; } //FK
 }

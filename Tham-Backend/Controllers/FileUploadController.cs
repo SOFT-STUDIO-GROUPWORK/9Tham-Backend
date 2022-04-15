@@ -8,7 +8,7 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+[Authorize(Roles="Admin")]
 public class FileUploadController : ControllerBase
 {
     private readonly ICloudinaryService _cloudinaryService;
