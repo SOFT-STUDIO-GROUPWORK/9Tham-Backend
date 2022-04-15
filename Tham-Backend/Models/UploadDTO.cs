@@ -2,5 +2,5 @@
 
 public class UploadDTO
 {
-    public string NameWithExtension { get; set; }
+    public IFormFile Files { get; set; }
 }

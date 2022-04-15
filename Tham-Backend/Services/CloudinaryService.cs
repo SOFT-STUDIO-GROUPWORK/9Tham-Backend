@@ -1,4 +1,5 @@
-﻿using CloudinaryDotNet;
+﻿using System.Text;
+using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 
 namespace Tham_Backend.Services;
@@ -22,9 +23,23 @@ public class CloudinaryService : ICloudinaryService
         var uploadParams = new ImageUploadParams
         {
             File = new FileDescription(path),
-            PublicId = "olympic_flag"
+            PublicId = RandomName()
         };
         var uploadResult = _cloudinary.Upload(uploadParams);
         return uploadResult;
+    }
+
+    private string RandomName()
+    {
+        var str = new StringBuilder();
+        char c;
+        var random = new Random((int) DateTime.Now.Ticks);
+        for (var i = 0; i < 32; i++)
+        {
+            c = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+            str.Append(c);
+        }
+
+        return str.ToString();
     }
 }

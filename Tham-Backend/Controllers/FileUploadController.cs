@@ -8,7 +8,7 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")]
+[Authorize]
 public class FileUploadController : ControllerBase
 {
     private readonly ICloudinaryService _cloudinaryService;
@@ -18,20 +18,43 @@ public class FileUploadController : ControllerBase
         _cloudinaryService = cloudinaryService;
     }
 
-    [HttpPost("upload")]
-    [AllowAnonymous]
-    public async Task<ActionResult<UploadResponseModel>> Register(UploadDTO request)
+
+    [HttpPost("picture")]
+    public async Task<ActionResult<UploadResponseModel>> Register([FromForm] UploadDTO objectFile)
     {
-        var result = _cloudinaryService.UploadImage("./Buffer/" + request.NameWithExtension, request.NameWithExtension);
-        if (result.StatusCode != (HttpStatusCode) 200) return BadRequest("Fail to upload.");
-        var response = new UploadResponseModel
+        try
         {
-            Width = result.Width,
-            Height = result.Height,
-            ResouceType = result.ResourceType,
-            Url = result.Url,
-            Format = result.Format
-        };
-        return Ok(response);
+            if (objectFile.Files.Length > 0)
+            {
+                var path = "./Buffer/";
+                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+                using (var fileStream = System.IO.File.Create(path + objectFile.Files.FileName))
+                {
+                    objectFile.Files.CopyTo(fileStream);
+                    fileStream.Flush();
+                }
+
+                var result = _cloudinaryService.UploadImage("./Buffer/" + objectFile.Files.FileName,
+                    objectFile.Files.FileName);
+                if (result.StatusCode != (HttpStatusCode) 200)
+                    return BadRequest("Fail to upload, Cloudinary service not available.");
+                var response = new UploadResponseModel
+                {
+                    Width = result.Width,
+                    Height = result.Height,
+                    ResouceType = result.ResourceType,
+                    Url = result.Url,
+                    Format = result.Format
+                };
+                return Ok(response);
+            }
+
+            return BadRequest("Fail to upload, Not upload.");
+        }
+        catch (Exception exception)
+        {
+            return BadRequest("Fail to upload, Transfer file error.");
+        }
     }
 }
