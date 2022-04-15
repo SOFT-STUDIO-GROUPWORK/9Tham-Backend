@@ -1,12 +1,14 @@
-﻿namespace Tham_Backend.Models;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class CommentModel
+namespace Tham_Backend.Data;
+
+public class Comments
 {
     public int Id { get; set; }
 
     public DateTime Published { get; set; }
 
-    public string Content { get; set; }
+    [Required] [StringLength(1000)] public string Content { get; set; }
 
     public bool Visible { get; set; }
 
