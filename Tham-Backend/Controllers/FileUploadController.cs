@@ -47,6 +47,10 @@ public class FileUploadController : ControllerBase
                     Url = result.Url,
                     Format = result.Format
                 };
+
+                if (System.IO.File.Exists("./Buffer/" + objectFile.Files.FileName))
+                    System.IO.File.Delete("./Buffer/" + objectFile.Files.FileName);
+
                 return Ok(response);
             }
 
