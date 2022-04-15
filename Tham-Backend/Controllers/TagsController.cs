@@ -36,7 +36,7 @@ public class TagsController : ControllerBase
     public async Task<IActionResult> AddTag([FromBody] TagModel tagModel)
     {
         var tag = await _repository.AddTagAsync(tagModel);
-        return CreatedAtAction(nameof(GetTags), new { id = tag }, tag);
+        return CreatedAtAction(nameof(GetTagById), new { id = tag }, tag);
     }
     
     [HttpPut("{id}")]

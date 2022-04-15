@@ -1,6 +1,6 @@
-﻿namespace Tham_Backend.Models;
+﻿namespace Tham_Backend.Data;
 
-public class LikeModel
+public class Likes
 {
     public int Id { get; set; }
     public int ArticleId { get; set; } //FK

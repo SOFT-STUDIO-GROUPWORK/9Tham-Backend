@@ -9,7 +9,7 @@ namespace Tham_Backend.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            /*migrationBuilder.CreateTable(
                 name: "Articles",
                 columns: table => new
                 {
@@ -44,7 +44,7 @@ namespace Tham_Backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bloggers", x => x.Id);
-                });
+                });*/
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
