@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tham_Backend.Data;
 
@@ -11,9 +12,10 @@ using Tham_Backend.Data;
 namespace Tham_Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220422045025_AddCommentsFK")]
+    partial class AddCommentsFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,10 +76,6 @@ namespace Tham_Backend.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ArticleId");
-
-                    b.HasIndex("TagId");
 
                     b.ToTable("ArticleTags");
                 });
@@ -174,14 +172,10 @@ namespace Tham_Backend.Migrations
                     b.Property<int>("ArticleId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("BloggerId")
+                    b.Property<int>("BloggerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ArticleId");
-
-                    b.HasIndex("BloggerId");
 
                     b.ToTable("Likes");
                 });
@@ -215,25 +209,6 @@ namespace Tham_Backend.Migrations
                     b.Navigation("Blogger");
                 });
 
-            modelBuilder.Entity("Tham_Backend.Data.ArticleTags", b =>
-                {
-                    b.HasOne("Tham_Backend.Data.Articles", "Article")
-                        .WithMany("ArticleTags")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Tham_Backend.Data.Tags", "Tag")
-                        .WithMany("ArticleTags")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Article");
-
-                    b.Navigation("Tag");
-                });
-
             modelBuilder.Entity("Tham_Backend.Data.Comments", b =>
                 {
                     b.HasOne("Tham_Backend.Data.Articles", "Article")
@@ -251,30 +226,9 @@ namespace Tham_Backend.Migrations
                     b.Navigation("Blogger");
                 });
 
-            modelBuilder.Entity("Tham_Backend.Data.Likes", b =>
-                {
-                    b.HasOne("Tham_Backend.Data.Articles", "Article")
-                        .WithMany("Likes")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Tham_Backend.Data.Bloggers", "Blogger")
-                        .WithMany("Likes")
-                        .HasForeignKey("BloggerId");
-
-                    b.Navigation("Article");
-
-                    b.Navigation("Blogger");
-                });
-
             modelBuilder.Entity("Tham_Backend.Data.Articles", b =>
                 {
-                    b.Navigation("ArticleTags");
-
                     b.Navigation("Comments");
-
-                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("Tham_Backend.Data.Bloggers", b =>
@@ -282,13 +236,6 @@ namespace Tham_Backend.Migrations
                     b.Navigation("Articles");
 
                     b.Navigation("Comments");
-
-                    b.Navigation("Likes");
-                });
-
-            modelBuilder.Entity("Tham_Backend.Data.Tags", b =>
-                {
-                    b.Navigation("ArticleTags");
                 });
 #pragma warning restore 612, 618
         }

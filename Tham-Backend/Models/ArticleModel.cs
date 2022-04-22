@@ -16,4 +16,5 @@ public class ArticleModel
     public int ViewCount { get; set; }
 
     public int BloggerId { get; set; } //FK
+    //public BloggerModel Blogger { get; set; }//use to send blogger data to client
 }
