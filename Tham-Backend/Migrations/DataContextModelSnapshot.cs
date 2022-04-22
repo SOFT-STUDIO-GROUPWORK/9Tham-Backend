@@ -54,7 +54,7 @@ namespace Tham_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Articles");
+                    b.ToTable("Articles", (string)null);
                 });
 
             modelBuilder.Entity("Tham_Backend.Data.ArticleTags", b =>
@@ -73,7 +73,7 @@ namespace Tham_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ArticleTags");
+                    b.ToTable("ArticleTags", (string)null);
                 });
 
             modelBuilder.Entity("Tham_Backend.Data.Bloggers", b =>
@@ -120,7 +120,7 @@ namespace Tham_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Bloggers");
+                    b.ToTable("Bloggers", (string)null);
                 });
 
             modelBuilder.Entity("Tham_Backend.Data.Comments", b =>
@@ -150,7 +150,7 @@ namespace Tham_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Tham_Backend.Data.Likes", b =>
@@ -169,7 +169,7 @@ namespace Tham_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Likes", (string)null);
                 });
 
             modelBuilder.Entity("Tham_Backend.Data.Tags", b =>
@@ -187,7 +187,7 @@ namespace Tham_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 #pragma warning restore 612, 618
         }
