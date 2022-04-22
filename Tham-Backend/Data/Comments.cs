@@ -8,7 +8,7 @@ public class Comments
 
     public DateTime Published { get; set; }
 
-    [Required] [StringLength(1000)] public string Content { get; set; }
+    [Required] [StringLength(1000)] public string Content { get; set; } = string.Empty;
 
     public bool Visible { get; set; }
 
