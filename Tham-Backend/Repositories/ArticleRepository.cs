@@ -25,7 +25,6 @@ public class ArticleRepository : IArticleRepository
     {
         var pageCount = Math.Ceiling(_context.Articles.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
-        
 
         var articles = await _context.Articles.Skip((page - 1) * (int) perPage).Take(page).ToListAsync();
         var response = new ArticleResponseModel()
@@ -51,6 +50,7 @@ public class ArticleRepository : IArticleRepository
     public async Task<int> AddArticleAsync(ArticleModel articleModel)
     {
         var article = _mapper.Map<Articles>(articleModel);
+        article.Published = new DateTime();
 
         await _context.Articles.AddAsync(article);
         await _context.SaveChangesAsync();
@@ -60,19 +60,6 @@ public class ArticleRepository : IArticleRepository
 
     public async Task UpdateArticleAsync(int articleId, ArticleModel articleModel)
     {
-        /*
-        var newArticle = new Articles()
-        {
-            Id = articleId,
-            Title = articleModel.Title,
-            Content = articleModel.Content,
-            BloggerId = articleModel.BloggerId,//XXX:Should not be changed
-            Visible = articleModel.Visible,
-            ViewCount = articleModel.ViewCount//XXX:Should not be changed
-        };
-
-        _context.Articles.Update(newArticle);
-        */
         var article = await _context.Articles.FirstOrDefaultAsync(x=>x.Id == articleId);
         if (article is not null)
         {
