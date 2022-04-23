@@ -24,10 +24,8 @@ public class ArticleRepository : IArticleRepository
     public async Task<ArticleResponseModel> GetPaginatedArticles(int page,float perPage)
     {
         var pageCount = Math.Ceiling(_context.Articles.Count() / perPage);
-        if (pageCount == 0)
-        {
-            pageCount = 1;
-        }
+        if (pageCount == 0) pageCount = 1;
+        
 
         var articles = await _context.Articles.Skip((page - 1) * (int) perPage).Take(page).ToListAsync();
         var response = new ArticleResponseModel()

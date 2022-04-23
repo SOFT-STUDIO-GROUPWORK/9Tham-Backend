@@ -25,7 +25,7 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet("{page:min(1)}/{perPage:min(1)}")]
-    public async Task<ActionResult<List<ArticleModel>>> GetArticles([FromRoute] int page,[FromRoute] int perPage)
+    public async Task<ActionResult<List<ArticleModel>>> GetArticles([FromRoute] int page, int perPage)
     {
         var articles = await _repository.GetPaginatedArticles(page,(float)perPage);
         return Ok(articles);
