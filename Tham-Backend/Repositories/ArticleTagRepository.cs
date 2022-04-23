@@ -37,8 +37,9 @@ public class ArticleTagRepository : IArticleTagRepository
 
     public async Task UpdateArticleTagAsync(int articleTagId, ArticleTagModel articleTagModel)
     {
-        articleTagModel.Id = articleTagId;
+        //articleTagModel.Id = articleTagId;
         var newArticleTag = _mapper.Map<ArticleTags>(articleTagModel);
+        newArticleTag.Id = articleTagId;
         _context.ArticleTags.Update(newArticleTag);
         await _context.SaveChangesAsync();
     }
