@@ -39,8 +39,9 @@ public class TagRepository : ITagRepository
 
     public async Task UpdateTagAsync(int tagId, TagModel tagModel)
     {
-        tagModel.Id = tagId;//XXX: Will it break?
+        //tagModel.Id = tagId;//XXX: Will it break?
         var newTag = _mapper.Map<Tags>(tagModel);
+        newTag.Id = tagId;
         _context.Tags.Update(newTag);
         await _context.SaveChangesAsync();
     }
