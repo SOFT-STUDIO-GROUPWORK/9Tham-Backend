@@ -2,7 +2,7 @@
 
 public class ArticlePaginationModel
 {
-    public List<ArticleModel> Articles { get; set; } = new();
+    public List<Articles> Articles { get; set; } = new();
     
     public int FirstPage { get; set; }
 

@@ -23,7 +23,7 @@ public class ArticleTagsController : ControllerBase
     }
 
     [HttpGet("{id:min(1)}")]
-    public async Task<ActionResult<ArticleTagModel>> GetArticleTagById([FromRoute] int id)
+    public async Task<ActionResult<ArticleTags>> GetArticleTagById([FromRoute] int id)
     {
         var articleTag = await _repository.GetArticleTagByIdAsync(id);
         if (articleTag is null)
@@ -36,7 +36,7 @@ public class ArticleTagsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "Admin,User")]
-    public async Task<IActionResult> AddArticleTag([FromBody] ArticleTagModel articleTagModel)
+    public async Task<ActionResult<int>> AddArticleTag([FromBody] ArticleTagModel articleTagModel)
     {
         var articleTagId = await _repository.AddArticleTagAsync(articleTagModel);
         return CreatedAtAction(nameof(GetArticleTagById), new {id = articleTagId}, articleTagId);

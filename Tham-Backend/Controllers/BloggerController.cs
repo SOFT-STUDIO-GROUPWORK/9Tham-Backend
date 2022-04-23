@@ -41,7 +41,7 @@ public class BloggerController : ControllerBase
     }
 
     [HttpGet("{email}")]
-    public async Task<ActionResult<BloggerModel>> GetBloggerById([FromRoute] string email)
+    public async Task<ActionResult<BloggerResponseModel>> GetBloggerById([FromRoute] string email)
     {
         var blogger = await _repository.GetBloggerByEmailAsync(email);
         if (blogger is null) return NotFound("Blogger not found!");
@@ -50,7 +50,7 @@ public class BloggerController : ControllerBase
 
     [HttpPut("{email}")]
     [Authorize(Roles = "Admin,User")]
-    public async Task<ActionResult<string>> UpdateBlogger(EditBloggerDTO request)
+    public async Task<IActionResult> UpdateBlogger(EditBloggerDTO request)
     {
         if (_userService.GetRole() == "User")
         {

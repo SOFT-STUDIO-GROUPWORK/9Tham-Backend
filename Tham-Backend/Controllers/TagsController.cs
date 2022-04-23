@@ -16,7 +16,7 @@ public class TagsController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<TagModel>>> GetTags()
+    public async Task<ActionResult<List<Tags>>> GetTags()
     {
         var tags = await _repository.GetTagsAsync();
         return Ok(tags);
@@ -37,7 +37,7 @@ public class TagsController : ControllerBase
     }
     
     [HttpGet("{id:min(1)}")]
-    public async Task<ActionResult<TagModel>> GetTagById([FromRoute]int id)
+    public async Task<ActionResult<Tags>> GetTagById([FromRoute]int id)
     {
         var tag = await _repository.GetTagByIdAsync(id);
         if (tag is null)

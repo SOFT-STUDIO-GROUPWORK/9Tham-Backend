@@ -20,7 +20,7 @@ public class FileUploadController : ControllerBase
 
     [HttpPost("picture")]
     [Authorize(Roles = "Admin,User")]
-    public async Task<ActionResult<UploadResponseModel>> Register([FromForm] UploadDTO objectFile)
+    public async Task<ActionResult<UploadResponseModel>> UploadPicture([FromForm] UploadDTO objectFile)
     {
         try
         {

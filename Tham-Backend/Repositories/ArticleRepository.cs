@@ -30,7 +30,7 @@ public class ArticleRepository : IArticleRepository
         var articles = await _context.Articles.Skip((page - 1) * (int) perPage).Take((int)perPage).ToListAsync();
         var response = new ArticlePaginationModel()
         {
-            Articles = _mapper.Map<List<ArticleModel>>(articles),
+            Articles = _mapper.Map<List<Articles>>(articles),
             CurrentPage = page,
             FirstPage = 1,
             LastPage = (int) pageCount
@@ -47,7 +47,7 @@ public class ArticleRepository : IArticleRepository
         var articles = qureyWhere.Skip((page - 1) * (int) perPage).Take((int)perPage);
         var response = new ArticlePaginationModel()
         {
-            Articles = _mapper.Map<List<ArticleModel>>(articles),
+            Articles = _mapper.Map<List<Articles>>(articles),
             CurrentPage = page,
             FirstPage = 1,
             LastPage = (int) pageCount

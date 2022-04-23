@@ -16,14 +16,14 @@ public class CommentsController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<CommentModel>>> GetComments()
+    public async Task<ActionResult<List<Comments>>> GetComments()
     {
         var comments = await _repository.GetCommentsAsync();
         return Ok(comments);
     }
 
     [HttpGet("{id:min(1)}")]
-    public async Task<ActionResult<CommentModel>> GetCommentById([FromRoute] int id)
+    public async Task<ActionResult<Comments>> GetCommentById([FromRoute] int id)
     {
         var comment = await _repository.GetCommentByIdAsync(id);
         if (comment is null)

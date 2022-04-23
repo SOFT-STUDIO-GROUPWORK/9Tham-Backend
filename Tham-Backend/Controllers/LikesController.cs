@@ -17,14 +17,14 @@ public class LikesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<LikeModel>>> GetLikes()
+    public async Task<ActionResult<List<Likes>>> GetLikes()
     {
         var likes = await _repository.GetLikesAsync();
         return Ok(likes);
     }
 
     [HttpGet("{id:min(1)}")]
-    public async Task<ActionResult<LikeModel>> GetLikeById([FromRoute] int id)
+    public async Task<ActionResult<Likes>> GetLikeById([FromRoute] int id)
     {
         var like = await _repository.GetLikeByIdAsync(id);
         if (like is null)
