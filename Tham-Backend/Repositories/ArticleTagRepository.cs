@@ -13,10 +13,10 @@ public class ArticleTagRepository : IArticleTagRepository
         _context = context;
         _mapper = mapper;
     }
-    public async Task<List<ArticleTagModel>> GetArticleTagsAsync()
+    public async Task<List<ArticleTags>> GetArticleTagsAsync()
     {
         var records = await _context.ArticleTags.ToListAsync();
-        return _mapper.Map<List<ArticleTagModel>>(records);
+        return _mapper.Map<List<ArticleTags>>(records);
     }
     
     public async Task<ArticleTagPaginationModel> GetArticleTagsPaginated(int page,float perPage)
@@ -36,10 +36,10 @@ public class ArticleTagRepository : IArticleTagRepository
         return response;
     }
 
-    public async Task<ArticleTagModel?> GetArticleTagByIdAsync(int articleTagId)
+    public async Task<ArticleTags?> GetArticleTagByIdAsync(int articleTagId)
     {
         var record = await _context.ArticleTags.FindAsync(articleTagId);
-        return _mapper.Map<ArticleTagModel>(record);
+        return _mapper.Map<ArticleTags>(record);
     }
 
     public async Task<int> AddArticleTagAsync(ArticleTagModel articleTagModel)
