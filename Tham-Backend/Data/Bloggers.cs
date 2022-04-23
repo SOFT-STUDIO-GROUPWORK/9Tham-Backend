@@ -19,6 +19,8 @@ public class Bloggers
 
     public bool IsBanned { get; set; }
 
+    public string ImageUrl { get; set; } = string.Empty;
+
     public byte[] PasswordHash { get; set; }
 
     public byte[] PasswordSalt { get; set; }
