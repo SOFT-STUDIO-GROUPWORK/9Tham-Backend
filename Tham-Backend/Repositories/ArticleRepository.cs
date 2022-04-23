@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using Tham_Backend.Data;
 using Tham_Backend.Models;
 
@@ -15,10 +16,10 @@ public class ArticleRepository : IArticleRepository
         _mapper = mapper;
     }
 
-    public async Task<List<ArticleModel>> GetArticlesAsync()
+    public async Task<List<Articles>> GetArticlesAsync()
     {
-        var records = await _context.Articles.Include(article => article.Blogger).ToListAsync();
-        return _mapper.Map<List<ArticleModel>>(records);
+        var records = await _context.Articles.Include(a=>a.Blogger).ToListAsync();
+        return _mapper.Map<List<Articles>>(records);
     }
 
     public async Task<ArticlePaginationModel> GetArticlesPaginated(int page,float perPage)
@@ -37,7 +38,7 @@ public class ArticleRepository : IArticleRepository
         return response;
     }
 
-    public async Task<ArticleModel?> GetArticleByIdAsync(int articleId)
+    public async Task<Articles?> GetArticleByIdAsync(int articleId)
     {
         var article = await _context.Articles.FirstOrDefaultAsync(x=>x.Id==articleId);
         if (article is not null)
@@ -45,13 +46,13 @@ public class ArticleRepository : IArticleRepository
             article.ViewCount++;
             await _context.SaveChangesAsync();
         }
-        return _mapper.Map<ArticleModel>(article);
+        return _mapper.Map<Articles>(article);
     }
     
     public async Task<int> AddArticleAsync(ArticleModel articleModel)
     {
         var article = _mapper.Map<Articles>(articleModel);
-        article.Published = new DateTime();
+        article.Published = DateTime.Now;
 
         await _context.Articles.AddAsync(article);
         await _context.SaveChangesAsync();

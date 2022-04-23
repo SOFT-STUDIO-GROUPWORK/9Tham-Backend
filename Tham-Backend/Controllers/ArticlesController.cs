@@ -18,7 +18,7 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ArticleModel>>> GetArticles()
+    public async Task<ActionResult<List<Articles>>> GetArticles()
     {
         var articles = await _repository.GetArticlesAsync();
         return Ok(articles);
@@ -32,7 +32,7 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet("{id:min(1)}")]
-    public async Task<ActionResult<ArticleModel>> GetArticle([FromRoute] int id)
+    public async Task<ActionResult<Articles>> GetArticle([FromRoute] int id)
     {
         var article = await _repository.GetArticleByIdAsync(id);
         if (article is null)
@@ -45,7 +45,7 @@ public class ArticlesController : ControllerBase
     // ! Fix incoming model
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<List<ArticleModel>>> AddArticle([FromBody] ArticleModel article)
+    public async Task<ActionResult<List<Articles>>> AddArticle([FromBody] ArticleModel article)
     {
         var articleId = await _repository.AddArticleAsync(article);
         return CreatedAtAction(nameof(GetArticle), new {id = articleId}, articleId);
@@ -54,7 +54,7 @@ public class ArticlesController : ControllerBase
     // ! Fix incoming model
     [HttpPut("{id:min(1)}")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<List<ArticleModel>>> UpdateArticle([FromRoute] int id,
+    public async Task<ActionResult<List<Articles>>> UpdateArticle([FromRoute] int id,
         [FromBody] ArticleModel articleModel)
     {
         await _repository.UpdateArticleAsync(id, articleModel);
@@ -63,7 +63,7 @@ public class ArticlesController : ControllerBase
 
     [HttpDelete("{id:min(1)}")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<ArticleModel>> DeleteArticle([FromRoute] int id)
+    public async Task<ActionResult<Articles>> DeleteArticle([FromRoute] int id)
     {
         await _repository.DeleteArticleAsync(id);
         return Ok();
