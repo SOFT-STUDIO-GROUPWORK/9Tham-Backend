@@ -12,8 +12,7 @@ public class Comments
     [Required] [StringLength(1000)] public string Content { get; set; } = string.Empty;
 
     public bool Visible { get; set; }
-
-    [JsonIgnore]
+    
     public Bloggers Blogger { get; set; }//NavigationReference
     public int? BloggerId { get; set; } //FK (must be nullable to prevent multiple cascade paths)
 

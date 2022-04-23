@@ -18,7 +18,7 @@ public class ArticleRepository : IArticleRepository
 
     public async Task<List<Articles>> GetArticlesAsync()
     {
-        var records = await _context.Articles.Include(a=>a.Blogger).ToListAsync();
+        var records = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.Comments).Include(a=>a.ArticleTags).ToListAsync();
         return _mapper.Map<List<Articles>>(records);
     }
 

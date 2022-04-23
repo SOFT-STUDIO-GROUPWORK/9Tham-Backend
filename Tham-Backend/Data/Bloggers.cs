@@ -25,8 +25,10 @@ public class Bloggers
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
 
-    //[JsonIgnore]
+    [JsonIgnore]
     public List<Articles> Articles { get; set; }//for FK on Articles table
+    [JsonIgnore]
     public List<Comments> Comments { get; set; }//for FK on Comments table
+    [JsonIgnore]
     public List<Likes> Likes { get; set; }//for FK on Likes table
 }
