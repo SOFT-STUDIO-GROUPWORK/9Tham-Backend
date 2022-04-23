@@ -17,7 +17,7 @@ public class ArticlesController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet("all")]
+    [HttpGet]
     public async Task<ActionResult<List<ArticleModel>>> GetArticles()
     {
         var articles = await _repository.GetArticlesAsync();
@@ -25,9 +25,9 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpGet("{page:min(1)}/{perPage:min(1)}")]
-    public async Task<ActionResult<List<ArticleModel>>> GetArticles([FromRoute] int page, int perPage)
+    public async Task<ActionResult<List<ArticlePaginationModel>>> GetArticles([FromRoute] int page, int perPage)
     {
-        var articles = await _repository.GetPaginatedArticles(page,(float)perPage);
+        var articles = await _repository.GetArticlesPaginated(page,(float)perPage);
         return Ok(articles);
     }
 

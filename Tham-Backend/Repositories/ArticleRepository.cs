@@ -21,17 +21,18 @@ public class ArticleRepository : IArticleRepository
         return _mapper.Map<List<ArticleModel>>(records);
     }
 
-    public async Task<ArticleResponseModel> GetPaginatedArticles(int page,float perPage)
+    public async Task<ArticlePaginationModel> GetArticlesPaginated(int page,float perPage)
     {
         var pageCount = Math.Ceiling(_context.Articles.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
 
         var articles = await _context.Articles.Skip((page - 1) * (int) perPage).Take(page).ToListAsync();
-        var response = new ArticleResponseModel()
+        var response = new ArticlePaginationModel()
         {
             Articles = _mapper.Map<List<ArticleModel>>(articles),
             CurrentPage = page,
-            Pages = (int) pageCount
+            FirstPage = 1,
+            LastPage = (int) pageCount
         };
         return response;
     }

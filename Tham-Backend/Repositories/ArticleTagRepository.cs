@@ -18,6 +18,23 @@ public class ArticleTagRepository : IArticleTagRepository
         var records = await _context.ArticleTags.ToListAsync();
         return _mapper.Map<List<ArticleTagModel>>(records);
     }
+    
+    public async Task<ArticleTagPaginationModel> GetArticleTagsPaginated(int page,float perPage)
+    {
+        var pageCount = Math.Ceiling(_context.ArticleTags.Count() / perPage);
+        if (pageCount == 0) pageCount = 1;
+        
+
+        var articles = await _context.ArticleTags.Skip((page - 1) * (int) perPage).Take(page).ToListAsync();
+        var response = new ArticleTagPaginationModel()
+        {
+            ArticleTags = _mapper.Map<List<ArticleTagModel>>(articles),
+            CurrentPage = page,
+            FirstPage = 1,
+            LastPage = (int) pageCount
+        };
+        return response;
+    }
 
     public async Task<ArticleTagModel?> GetArticleTagByIdAsync(int articleTagId)
     {

@@ -16,10 +16,17 @@ public class ArticleTagsController : ControllerBase
         _repository = repository;
     }
     
-    [HttpGet("all")]
+    [HttpGet]
     public async Task<ActionResult<List<ArticleTagModel>>> GetArticleTags()
     {
         var articleTags = await _repository.GetArticleTagsAsync();
+        return Ok(articleTags);
+    }
+    
+    [HttpGet("{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<List<ArticleTagModel>>> GetArticles([FromRoute] int page, int perPage)
+    {
+        var articleTags = await _repository.GetArticleTagsPaginated(page,(float)perPage);
         return Ok(articleTags);
     }
 
