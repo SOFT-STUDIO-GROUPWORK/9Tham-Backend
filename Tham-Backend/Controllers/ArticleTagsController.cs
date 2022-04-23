@@ -10,9 +10,11 @@ namespace Tham_Backend.Controllers;
 public class ArticleTagsController : ControllerBase
 {
     private readonly IArticleTagRepository _repository;
-    public ArticleTagsController(IArticleTagRepository repository)
+    private readonly IArticleRepository _articleRepository;
+    public ArticleTagsController(IArticleTagRepository repository, IArticleRepository articleRepository)
     {
         _repository = repository;
+        _articleRepository = articleRepository;
     }
     
     [HttpGet]
@@ -36,10 +38,19 @@ public class ArticleTagsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "Admin,User")]
-    public async Task<ActionResult<int>> AddArticleTag([FromBody] ArticleTagModel articleTagModel)
+    public async Task<IActionResult> AddArticleTag([FromBody] ArticleTagModel articleTagModel)
     {
+        //prevent adding multiple identical tag to an article
+        var article = await _articleRepository.GetArticleByIdAsync(articleTagModel.ArticleId);
+
+        if (article is null) return NotFound("The article is not existed");
+        
+        var existingTag = article.ArticleTags.FirstOrDefault(articleTag => articleTag.TagId == articleTagModel.TagId);
+        if (existingTag is not null) return BadRequest("The article already has this tag");
+        
         var articleTagId = await _repository.AddArticleTagAsync(articleTagModel);
         return CreatedAtAction(nameof(GetArticleTagById), new {id = articleTagId}, articleTagId);
+
     }
 
     [HttpPut("{id:min(1)}")]
