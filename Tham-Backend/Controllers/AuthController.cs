@@ -8,7 +8,6 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
@@ -25,7 +24,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
+    [Authorize(Roles = "Admin,User")]
     public ActionResult<string> WhoAmI()
     {
         var email = _userService.GetEmail();
@@ -33,7 +32,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<string>> Register(RegisterDTO request)
     {
         var user = await _repository.GetBloggerByEmailAsync(request.Email);
@@ -59,7 +58,6 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    [AllowAnonymous]
     public async Task<ActionResult<string>> Login(LoginDTO request)
     {
         var user = await _repository.GetBloggerByEmailAsync(request.Email);

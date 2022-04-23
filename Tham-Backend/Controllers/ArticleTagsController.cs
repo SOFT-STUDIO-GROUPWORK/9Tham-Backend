@@ -7,7 +7,6 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")]
 public class ArticleTagsController : ControllerBase
 {
     private readonly IArticleTagRepository _repository;
@@ -42,16 +41,16 @@ public class ArticleTagsController : ControllerBase
         return Ok(articleTag);
     }
 
-    // ! Fix incoming model
     [HttpPost]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> AddArticleTag([FromBody] ArticleTagModel articleTagModel)
     {
         var articleTagId = await _repository.AddArticleTagAsync(articleTagModel);
         return CreatedAtAction(nameof(GetArticleTagById), new {id = articleTagId}, articleTagId);
     }
 
-    // ! Fix incoming model
     [HttpPut("{id:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> UpdateArticleTag([FromRoute] int id, [FromBody] ArticleTagModel articleTagModel)
     {
         await _repository.UpdateArticleTagAsync(id, articleTagModel);
@@ -59,6 +58,7 @@ public class ArticleTagsController : ControllerBase
     }
 
     [HttpDelete("{id:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> DeleteArticleTag([FromRoute] int id)
     {
         await _repository.DeleteArticleTagAsync(id);

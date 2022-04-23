@@ -7,7 +7,6 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class BloggerController : ControllerBase
 {
     private readonly IBloggerRepository _repository;
@@ -40,9 +39,10 @@ public class BloggerController : ControllerBase
     }
 
     [HttpPut("{email}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<string>> UpdateBlogger(EditBloggerDTO request)
     {
+        
         await _repository.UpdateBloggerAsync(request.Email, request);
         return Ok();
     }

@@ -7,7 +7,6 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")]
 public class ArticlesController : ControllerBase
 {
     private readonly IArticleRepository _repository;
@@ -42,18 +41,16 @@ public class ArticlesController : ControllerBase
         return Ok(article);
     }
 
-    // ! Fix incoming model
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<List<ArticleModel>>> AddArticle([FromBody] ArticleModel article)
     {
         var articleId = await _repository.AddArticleAsync(article);
         return CreatedAtAction(nameof(GetArticle), new {id = articleId}, articleId);
     }
 
-    // ! Fix incoming model
     [HttpPut("{id:min(1)}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<List<ArticleModel>>> UpdateArticle([FromRoute] int id,
         [FromBody] ArticleModel articleModel)
     {
@@ -62,7 +59,7 @@ public class ArticlesController : ControllerBase
     }
 
     [HttpDelete("{id:min(1)}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<ArticleModel>> DeleteArticle([FromRoute] int id)
     {
         await _repository.DeleteArticleAsync(id);

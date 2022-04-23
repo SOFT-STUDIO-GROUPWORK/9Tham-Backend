@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tham_Backend.Migrations
 {
-    public partial class Final : Migration
+    public partial class Final_T : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -7,7 +7,6 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class LikesController : ControllerBase
 {
     private readonly ILikeRepository _repository;
@@ -37,6 +36,7 @@ public class LikesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> AddLike([FromBody] LikeModel likeModel)
     {
         var likeId = await _repository.AddLikeAsync(likeModel);
@@ -44,6 +44,7 @@ public class LikesController : ControllerBase
     }
 
     [HttpPut("{id:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> UpdateLike([FromRoute] int id, [FromBody] LikeModel likeModel)
     {
         await _repository.UpdateLikeAsync(id, likeModel);
@@ -51,6 +52,7 @@ public class LikesController : ControllerBase
     }
 
     [HttpDelete("{id:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> DeleteLike([FromRoute] int id)
     {
         await _repository.DeleteLikeAsync(id);

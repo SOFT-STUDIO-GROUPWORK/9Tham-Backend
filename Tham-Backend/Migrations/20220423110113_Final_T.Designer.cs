@@ -12,8 +12,8 @@ using Tham_Backend.Data;
 namespace Tham_Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220423074006_Final")]
-    partial class Final
+    [Migration("20220423110113_Final_T")]
+    partial class Final_T
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

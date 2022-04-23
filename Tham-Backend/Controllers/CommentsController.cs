@@ -7,7 +7,6 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class CommentsController : ControllerBase
 {
     private readonly ICommentRepository _repository;
@@ -36,6 +35,7 @@ public class CommentsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> AddComment([FromBody] CommentModel commentModel)
     {
         var commentId = await _repository.AddCommentAsync(commentModel);
@@ -43,6 +43,7 @@ public class CommentsController : ControllerBase
     }
 
     [HttpPut("{id:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> UpdateComment([FromRoute] int id, [FromBody] CommentModel commentModel)
     {
         await _repository.UpdateCommentAsync(id, commentModel);
@@ -50,6 +51,7 @@ public class CommentsController : ControllerBase
     }
 
     [HttpDelete("{id:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> DeleteComment([FromRoute] int id)
     {
         await _repository.DeleteCommentAsync(id);

@@ -8,7 +8,6 @@ namespace Tham_Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles="Admin")]
 public class FileUploadController : ControllerBase
 {
     private readonly ICloudinaryService _cloudinaryService;
@@ -20,6 +19,7 @@ public class FileUploadController : ControllerBase
 
 
     [HttpPost("picture")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<UploadResponseModel>> Register([FromForm] UploadDTO objectFile)
     {
         try

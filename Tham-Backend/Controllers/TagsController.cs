@@ -6,7 +6,6 @@ using Tham_Backend.Repositories;
 namespace Tham_Backend.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")]
 public class TagsController : ControllerBase
 {
     private readonly ITagRepository _repository;
@@ -35,6 +34,7 @@ public class TagsController : ControllerBase
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> AddTag([FromBody] TagModel tagModel)
     {
         var tag = await _repository.AddTagAsync(tagModel);
@@ -42,6 +42,7 @@ public class TagsController : ControllerBase
     }
     
     [HttpPut("{id:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> UpdateTag([FromRoute]int id, [FromBody] TagModel tagModel)
     {
         await _repository.UpdateTagAsync(id, tagModel);
@@ -49,6 +50,7 @@ public class TagsController : ControllerBase
     }
     
     [HttpDelete("{id:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> DeleteTag([FromRoute]int id)
     {
         await _repository.DeleteTagAsync(id);
