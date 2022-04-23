@@ -16,14 +16,14 @@ public class ArticleTagsController : ControllerBase
         _repository = repository;
     }
     
-    [HttpGet]
+    [HttpGet("all")]
     public async Task<ActionResult<List<ArticleTagModel>>> GetArticleTags()
     {
         var articleTags = await _repository.GetArticleTagsAsync();
         return Ok(articleTags);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:min(1)}")]
     public async Task<ActionResult<ArticleTagModel>> GetArticleTagById([FromRoute] int id)
     {
         var articleTag = await _repository.GetArticleTagByIdAsync(id);
@@ -35,6 +35,7 @@ public class ArticleTagsController : ControllerBase
         return Ok(articleTag);
     }
 
+    // ! Fix incoming model
     [HttpPost]
     public async Task<IActionResult> AddArticleTag([FromBody] ArticleTagModel articleTagModel)
     {
@@ -42,14 +43,15 @@ public class ArticleTagsController : ControllerBase
         return CreatedAtAction(nameof(GetArticleTagById), new {id = articleTagId}, articleTagId);
     }
 
-    [HttpPut("{id}")]
+    // ! Fix incoming model
+    [HttpPut("{id:min(1)}")]
     public async Task<IActionResult> UpdateArticleTag([FromRoute] int id, [FromBody] ArticleTagModel articleTagModel)
     {
         await _repository.UpdateArticleTagAsync(id, articleTagModel);
         return Ok();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:min(1)}")]
     public async Task<IActionResult> DeleteArticleTag([FromRoute] int id)
     {
         await _repository.DeleteArticleTagAsync(id);

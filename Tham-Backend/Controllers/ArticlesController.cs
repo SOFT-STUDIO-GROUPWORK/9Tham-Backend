@@ -31,7 +31,7 @@ public class ArticlesController : ControllerBase
         return Ok(articles);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:min(1)}")]
     public async Task<ActionResult<ArticleModel>> GetArticle([FromRoute] int id)
     {
         var article = await _repository.GetArticleByIdAsync(id);
@@ -42,6 +42,7 @@ public class ArticlesController : ControllerBase
         return Ok(article);
     }
 
+    // ! Fix incoming model
     [HttpPost]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<List<ArticleModel>>> AddArticle([FromBody] ArticleModel article)
@@ -50,7 +51,8 @@ public class ArticlesController : ControllerBase
         return CreatedAtAction(nameof(GetArticle), new {id = articleId}, articleId);
     }
 
-    [HttpPut("{id}")]
+    // ! Fix incoming model
+    [HttpPut("{id:min(1)}")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<List<ArticleModel>>> UpdateArticle([FromRoute] int id,
         [FromBody] ArticleModel articleModel)
@@ -59,7 +61,7 @@ public class ArticlesController : ControllerBase
         return Ok();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:min(1)}")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ArticleModel>> DeleteArticle([FromRoute] int id)
     {

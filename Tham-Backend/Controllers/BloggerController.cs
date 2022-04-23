@@ -17,7 +17,7 @@ public class BloggerController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet]
+    [HttpGet("all")]
     public async Task<ActionResult<List<BloggerModel>>> GetBloggers()
     {
         var bloggers = await _repository.GetBloggersAsync();
