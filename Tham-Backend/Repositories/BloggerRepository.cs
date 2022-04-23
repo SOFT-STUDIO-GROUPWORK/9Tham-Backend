@@ -81,22 +81,6 @@ public class BloggerRepository : IBloggerRepository
 
     public async Task UpdateBloggerAsync(string email, EditBloggerDTO editBloggerDto)
     {
-        /*
-        var newBlogger = new Bloggers
-        {
-            Id = bloggerId,//XXX: Don't change
-            FirstName = bloggerModel.FirstName,
-            LastName = bloggerModel.LastName,
-            NickName = bloggerModel.NickName,
-            Email = bloggerModel.Email,
-            Role = bloggerModel.Role,
-            IsBanned = bloggerModel.IsBanned,
-            PasswordHash = bloggerModel.PasswordHash,//XXX: Don't change
-            PasswordSalt = bloggerModel.PasswordSalt//XXX: Don't change
-        };
-        _context.Bloggers.Update(newBlogger);
-        */
-        
         var blogger = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email == email);
 
         _authService.CreatePasswordHash(editBloggerDto.Password, out var passwordHash,

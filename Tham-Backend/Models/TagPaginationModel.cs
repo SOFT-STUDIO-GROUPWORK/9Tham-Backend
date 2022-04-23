@@ -1,8 +1,8 @@
 ﻿namespace Tham_Backend.Models;
 
-public class ArticleTagPaginationModel
+public class TagPaginationModel
 {
-    public List<ArticleTagModel> ArticleTags { get; set; } = new();
+    public List<TagModel> Tags { get; set; } = new();
     
     public int FirstPage { get; set; }
 

@@ -22,6 +22,20 @@ public class TagsController : ControllerBase
         return Ok(tags);
     }
     
+    [HttpGet("{search}/{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<TagPaginationModel>> SearchTags([FromRoute] string search,int page, int perPage)
+    {
+        var tags = await _repository.SearchTagsPaginated(page,(float)perPage,search);
+        return Ok(tags);
+    }
+    
+    [HttpGet("{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<List<TagPaginationModel>>> GetTags([FromRoute] int page, int perPage)
+    {
+        var tags = await _repository.GetTagsPaginated(page,(float)perPage);
+        return Ok(tags);
+    }
+    
     [HttpGet("{id:min(1)}")]
     public async Task<ActionResult<TagModel>> GetTagById([FromRoute]int id)
     {

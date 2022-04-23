@@ -20,6 +20,40 @@ public class TagRepository : ITagRepository
         var records = await _context.Tags.ToListAsync();
         return _mapper.Map<List<TagModel>>(records);
     }
+    
+    public async Task<TagPaginationModel> SearchTagsPaginated(int page,float perPage, string search)
+    {
+        var qureyWhere = await _context.Tags.Where(e => e.Name.Contains(search)).ToListAsync();
+        var pageCount = Math.Ceiling(qureyWhere.Count() / perPage);
+        if (pageCount == 0) pageCount = 1;
+
+        var tags = qureyWhere.Skip((page - 1) * (int) perPage).Take((int)perPage);
+        var response = new TagPaginationModel()
+        {
+            Tags = _mapper.Map<List<TagModel>>(tags),
+            CurrentPage = page,
+            FirstPage = 1,
+            LastPage = (int) pageCount
+        };
+        return response;
+    }
+    
+    public async Task<TagPaginationModel> GetTagsPaginated(int page,float perPage)
+    {
+        var pageCount = Math.Ceiling(_context.Tags.Count() / perPage);
+        if (pageCount == 0) pageCount = 1;
+        
+
+        var tags = await _context.Tags.Skip((page - 1) * (int) perPage).Take((int)perPage).ToListAsync();
+        var response = new TagPaginationModel()
+        {
+            Tags = _mapper.Map<List<TagModel>>(tags),
+            CurrentPage = page,
+            FirstPage = 1,
+            LastPage = (int) pageCount
+        };
+        return response;
+    }
 
     public async Task<TagModel?> GetTagByIdAsync(int tagId)
     {

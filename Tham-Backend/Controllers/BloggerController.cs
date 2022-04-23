@@ -29,8 +29,8 @@ public class BloggerController : ControllerBase
     [HttpGet("{search}/{page:min(1)}/{perPage:min(1)}")]
     public async Task<ActionResult<BloggerPaginationModel>> SearchBloggers([FromRoute] string search,int page, int perPage)
     {
-        var articles = await _repository.SearchBloggersPaginated(page,(float)perPage,search);
-        return Ok(articles);
+        var bloggers = await _repository.SearchBloggersPaginated(page,(float)perPage,search);
+        return Ok(bloggers);
     }
     
     [HttpGet("{page:min(1)}/{perPage:min(1)}")]
