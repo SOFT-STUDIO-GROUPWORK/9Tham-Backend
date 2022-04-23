@@ -13,6 +13,9 @@ public class BloggerModel
     public UserRoles Role { get; set; }
 
     public bool IsBanned { get; set; }
+    
+    public string ImageUrl { get; set; }
+    public string BannerUrl { get; set; }
 
     public byte[] PasswordHash { get; set; }
 
