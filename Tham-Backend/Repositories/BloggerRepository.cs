@@ -26,6 +26,22 @@ public class BloggerRepository : IBloggerRepository
         var record = await _context.Bloggers.FindAsync(bloggerId);
         return _mapper.Map<BloggerModel>(record);
     }
+    
+    public async Task<BloggerPaginationModel> GetBloggersPaginated(int page,float perPage)
+    {
+        var pageCount = Math.Ceiling(_context.Bloggers.Count() / perPage);
+        if (pageCount == 0) pageCount = 1;
+
+        var bloggers = await _context.Bloggers.Skip((page - 1) * (int) perPage).Take(page).ToListAsync();
+        var response = new BloggerPaginationModel()
+        {
+            Bloggers = _mapper.Map<List<BloggerModel>>(bloggers),
+            CurrentPage = page,
+            FirstPage = 1,
+            LastPage = (int) pageCount
+        };
+        return response;
+    }
 
     public async Task<int> AddBloggerAsync(BloggerModel bloggerModel)
     {

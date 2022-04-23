@@ -23,7 +23,7 @@ public class CommentsController : ControllerBase
         return Ok(comments);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:min(1)}")]
     public async Task<ActionResult<CommentModel>> GetCommentById([FromRoute] int id)
     {
         var comment = await _repository.GetCommentByIdAsync(id);
@@ -42,14 +42,14 @@ public class CommentsController : ControllerBase
         return CreatedAtAction(nameof(GetCommentById), new {id = commentId}, commentId);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:min(1)}")]
     public async Task<IActionResult> UpdateComment([FromRoute] int id, [FromBody] CommentModel commentModel)
     {
         await _repository.UpdateCommentAsync(id, commentModel);
         return Ok();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:min(1)}")]
     public async Task<IActionResult> DeleteComment([FromRoute] int id)
     {
         await _repository.DeleteCommentAsync(id);

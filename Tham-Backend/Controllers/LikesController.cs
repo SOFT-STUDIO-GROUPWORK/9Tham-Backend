@@ -24,7 +24,7 @@ public class LikesController : ControllerBase
         return Ok(likes);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:min(1)}")]
     public async Task<ActionResult<LikeModel>> GetLikeById([FromRoute] int id)
     {
         var like = await _repository.GetLikeByIdAsync(id);
@@ -43,14 +43,14 @@ public class LikesController : ControllerBase
         return CreatedAtAction(nameof(GetLikeById), new {id = likeId}, likeId);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:min(1)}")]
     public async Task<IActionResult> UpdateLike([FromRoute] int id, [FromBody] LikeModel likeModel)
     {
         await _repository.UpdateLikeAsync(id, likeModel);
         return Ok();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:min(1)}")]
     public async Task<IActionResult> DeleteLike([FromRoute] int id)
     {
         await _repository.DeleteLikeAsync(id);

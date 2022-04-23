@@ -23,8 +23,15 @@ public class BloggerController : ControllerBase
         var bloggers = await _repository.GetBloggersAsync();
         return Ok(bloggers);
     }
+    
+    [HttpGet("{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<List<BloggerModel>>> GetBloggers([FromRoute] int page, int perPage)
+    {
+        var bloggers = await _repository.GetBloggersPaginated(page,(float)perPage);
+        return Ok(bloggers);
+    }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:min(1)}")]
     public async Task<ActionResult<BloggerModel>> GetBloggerById([FromRoute] int id)
     {
         var blogger = await _repository.GetBloggerByIdAsync(id);
@@ -32,7 +39,7 @@ public class BloggerController : ControllerBase
         return Ok(blogger);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:min(1)}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateBlogger([FromRoute] int id, [FromBody] BloggerModel bloggerModel)
     {
@@ -40,7 +47,7 @@ public class BloggerController : ControllerBase
         return Ok();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:min(1)}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteBlogger([FromRoute] int id)
     {

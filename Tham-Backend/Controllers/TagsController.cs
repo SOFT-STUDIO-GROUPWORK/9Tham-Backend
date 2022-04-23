@@ -23,7 +23,7 @@ public class TagsController : ControllerBase
         return Ok(tags);
     }
     
-    [HttpGet("{id}")]
+    [HttpGet("{id:min(1)}")]
     public async Task<ActionResult<TagModel>> GetTagById([FromRoute]int id)
     {
         var tag = await _repository.GetTagByIdAsync(id);
@@ -41,14 +41,14 @@ public class TagsController : ControllerBase
         return CreatedAtAction(nameof(GetTagById), new { id = tag }, tag);
     }
     
-    [HttpPut("{id}")]
+    [HttpPut("{id:min(1)}")]
     public async Task<IActionResult> UpdateTag([FromRoute]int id, [FromBody] TagModel tagModel)
     {
         await _repository.UpdateTagAsync(id, tagModel);
         return Ok();
     }
     
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:min(1)}")]
     public async Task<IActionResult> DeleteTag([FromRoute]int id)
     {
         await _repository.DeleteTagAsync(id);
