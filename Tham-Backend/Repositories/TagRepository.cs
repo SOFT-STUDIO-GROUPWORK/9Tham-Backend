@@ -15,10 +15,10 @@ public class TagRepository : ITagRepository
         _mapper = mapper;
     }
 
-    public async Task<List<TagModel>> GetTagsAsync()
+    public async Task<List<Tags>> GetTagsAsync()
     {
         var records = await _context.Tags.ToListAsync();
-        return _mapper.Map<List<TagModel>>(records);
+        return _mapper.Map<List<Tags>>(records);
     }
     
     public async Task<TagPaginationModel> SearchTagsPaginated(int page,float perPage, string search)
@@ -55,10 +55,10 @@ public class TagRepository : ITagRepository
         return response;
     }
 
-    public async Task<TagModel?> GetTagByIdAsync(int tagId)
+    public async Task<Tags?> GetTagByIdAsync(int tagId)
     {
         var record = await _context.Tags.FindAsync(tagId);
-        return _mapper.Map<TagModel>(record);
+        return _mapper.Map<Tags>(record);
     }
 
     public async Task<int> AddTagAsync(TagModel tagModel)

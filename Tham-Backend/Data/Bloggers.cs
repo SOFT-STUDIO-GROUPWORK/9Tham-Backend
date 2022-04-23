@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 using Tham_Backend.Models;
 
 namespace Tham_Backend.Data;
@@ -19,10 +20,12 @@ public class Bloggers
 
     public bool IsBanned { get; set; }
 
+    public string ImageUrl { get; set; } = string.Empty;
+    public string BannerUrl { get; set; } = string.Empty;
     public byte[] PasswordHash { get; set; }
-
     public byte[] PasswordSalt { get; set; }
 
+    //[JsonIgnore]
     public List<Articles> Articles { get; set; }//for FK on Articles table
     public List<Comments> Comments { get; set; }//for FK on Comments table
     public List<Likes> Likes { get; set; }//for FK on Likes table

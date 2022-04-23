@@ -15,6 +15,7 @@ public class Articles
 
     public bool Visible { get; set; }
     public int ViewCount { get; set; }
+    public string ThumbnailUrl { get; set; } = string.Empty;
 
     [JsonIgnore]
     public Bloggers Blogger { get; set; }//NavigationReference (since BloggerId got no 's' after Blogger => Name must exactly match)

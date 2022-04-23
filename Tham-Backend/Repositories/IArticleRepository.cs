@@ -4,7 +4,7 @@ namespace Tham_Backend.Repositories;
 
 public interface IArticleRepository
 {
-    Task<List<ArticleModel>> GetArticlesAsync();
+    Task<List<Articles>> GetArticlesAsync();
     Task<ArticlePaginationModel> GetArticlesPaginated(int page, float perPage);
     Task<ArticlePaginationModel> SearchArticlesPaginated(int page, float perPage, string search);
     Task<ArticleModel?> GetArticleByIdAsync(int articleId);

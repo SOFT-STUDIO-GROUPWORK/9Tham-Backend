@@ -13,16 +13,16 @@ public class CommentRepository:ICommentRepository
         _context = context;
         _mapper = mapper;
     }
-    public async Task<List<CommentModel>> GetCommentsAsync()
+    public async Task<List<Comments>> GetCommentsAsync()
     {
         var records = await _context.Comments.ToListAsync();
-        return _mapper.Map<List<CommentModel>>(records);
+        return _mapper.Map<List<Comments>>(records);
     }
 
-    public async Task<CommentModel?> GetCommentByIdAsync(int commentId)
+    public async Task<Comments?> GetCommentByIdAsync(int commentId)
     {
         var record = await _context.Comments.FindAsync(commentId);
-        return _mapper.Map<CommentModel>(record);
+        return _mapper.Map<Comments>(record);
     }
 
     public async Task<int> AddCommentAsync(CommentModel commentModel)

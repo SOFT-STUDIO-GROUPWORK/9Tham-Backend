@@ -16,7 +16,7 @@ public class ArticleTagsController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<ArticleTagModel>>> GetArticleTags()
+    public async Task<ActionResult<List<ArticleTags>>> GetArticleTags()
     {
         var articleTags = await _repository.GetArticleTagsAsync();
         return Ok(articleTags);
