@@ -37,8 +37,9 @@ public class CommentRepository:ICommentRepository
 
     public async Task UpdateCommentAsync(int commentId, CommentModel commentModel)
     {
-        commentModel.Id = commentId;
+        //commentModel.Id = commentId;
         var newComment = _mapper.Map<Comments>(commentModel);
+        newComment.Id = commentId;
         _context.Comments.Update(newComment);
         await _context.SaveChangesAsync();
     }

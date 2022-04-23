@@ -2,9 +2,9 @@
 
 public class CommentModel
 {
-    public int Id { get; set; }
+    //public int Id { get; set; }
 
-    public DateTime Published { get; set; }
+    //public DateTime Published { get; set; }
 
     public string Content { get; set; }
 
