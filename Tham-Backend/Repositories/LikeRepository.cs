@@ -37,8 +37,9 @@ public class LikeRepository: ILikeRepository
 
     public async Task UpdateLikeAsync(int likeId, LikeModel likeModel)
     {
-        likeModel.Id = likeId;
+        //likeModel.Id = likeId;
         var newLike = _mapper.Map<Likes>(likeModel);
+        newLike.Id = likeId;
         _context.Likes.Update(newLike);
         await _context.SaveChangesAsync();
     }
