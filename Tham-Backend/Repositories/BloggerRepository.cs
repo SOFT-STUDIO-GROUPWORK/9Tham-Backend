@@ -52,6 +52,23 @@ public class BloggerRepository : IBloggerRepository
         return response;
     }
 
+    public async Task<BloggerPaginationModel> SearchBloggersPaginated(int page, float perPage, string search)
+    {
+        var qureyWhere = await _context.Bloggers.Where(e => e.Email.Contains(search) || e.NickName.Contains(search) || e.FirstName.Contains(search)|| e.LastName.Contains(search)).ToListAsync();
+        var pageCount = Math.Ceiling(qureyWhere.Count / perPage);
+        if (pageCount == 0) pageCount = 1;
+
+        var bloggers = qureyWhere.Skip((page - 1) * (int) perPage).Take((int)perPage);
+        var response = new BloggerPaginationModel()
+        {
+            Bloggers = _mapper.Map<List<BloggerResponseModel>>(bloggers),
+            CurrentPage = page,
+            FirstPage = 1,
+            LastPage = (int) pageCount
+        };
+        return response;
+    }
+
     public async Task<int> AddBloggerAsync(BloggerModel bloggerModel)
     {
         var blogger = _mapper.Map<Bloggers>(bloggerModel);

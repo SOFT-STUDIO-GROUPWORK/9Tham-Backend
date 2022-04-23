@@ -23,15 +23,15 @@ public class ArticlesController : ControllerBase
         return Ok(articles);
     }
     
-    [HttpGet("{search}")]
-    public async Task<ActionResult<List<ArticleModel>>> SearchArticles([FromRoute] string search)
+    [HttpGet("{search}/{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<ArticlePaginationModel>> SearchArticles([FromRoute] string search,int page, int perPage)
     {
-        var articles = await _repository.Search();
+        var articles = await _repository.SearchArticlesPaginated(page,(float)perPage,search);
         return Ok(articles);
     }
 
     [HttpGet("{page:min(1)}/{perPage:min(1)}")]
-    public async Task<ActionResult<List<ArticlePaginationModel>>> GetArticles([FromRoute] int page, int perPage)
+    public async Task<ActionResult<ArticlePaginationModel>> GetArticles([FromRoute] int page, int perPage)
     {
         var articles = await _repository.GetArticlesPaginated(page,(float)perPage);
         return Ok(articles);
@@ -50,7 +50,7 @@ public class ArticlesController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "Admin,User")]
-    public async Task<ActionResult<List<ArticleModel>>> AddArticle([FromBody] ArticleModel article)
+    public async Task<ActionResult<ArticleModel>> AddArticle([FromBody] ArticleModel article)
     {
         var articleId = await _repository.AddArticleAsync(article);
         return CreatedAtAction(nameof(GetArticle), new {id = articleId}, articleId);
@@ -58,7 +58,7 @@ public class ArticlesController : ControllerBase
 
     [HttpPut("{id:min(1)}")]
     [Authorize(Roles = "Admin,User")]
-    public async Task<ActionResult<List<ArticleModel>>> UpdateArticle([FromRoute] int id,
+    public async Task<ActionResult<ArticleModel>> UpdateArticle([FromRoute] int id,
         [FromBody] ArticleModel articleModel)
     {
         await _repository.UpdateArticleAsync(id, articleModel);

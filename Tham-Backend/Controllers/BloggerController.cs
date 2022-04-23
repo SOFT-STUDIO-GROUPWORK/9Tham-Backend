@@ -26,8 +26,15 @@ public class BloggerController : ControllerBase
         return Ok(bloggers);
     }
     
+    [HttpGet("{search}/{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<BloggerPaginationModel>> SearchBloggers([FromRoute] string search,int page, int perPage)
+    {
+        var articles = await _repository.SearchBloggersPaginated(page,(float)perPage,search);
+        return Ok(articles);
+    }
+    
     [HttpGet("{page:min(1)}/{perPage:min(1)}")]
-    public async Task<ActionResult<List<BloggerPaginationModel>>> GetBloggers([FromRoute] int page, int perPage)
+    public async Task<ActionResult<BloggerPaginationModel>> GetBloggers([FromRoute] int page, int perPage)
     {
         var bloggers = await _repository.GetBloggersPaginated(page,(float)perPage);
         return Ok(bloggers);
