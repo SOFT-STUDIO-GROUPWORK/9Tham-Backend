@@ -2,7 +2,7 @@
 
 public class BloggerPaginationModel
 {
-    public List<BloggerModel> Bloggers { get; set; } = new();
+    public List<BloggerResponseModel> Bloggers { get; set; } = new();
     
     public int FirstPage { get; set; }
 

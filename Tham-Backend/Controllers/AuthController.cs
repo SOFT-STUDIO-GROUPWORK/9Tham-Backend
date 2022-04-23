@@ -21,6 +21,7 @@ public class AuthController : ControllerBase
         _userService = userService;
         _authService = authService;
         _repository = repository;
+        
     }
 
     [HttpGet]
@@ -31,9 +32,34 @@ public class AuthController : ControllerBase
         return Ok(email);
     }
 
-    [HttpPost("register")]
+    [HttpPost("register/admin")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<string>> Register(RegisterDTO request)
+    public async Task<ActionResult<string>> RegisterAdmin(RegisterDTO request)
+    {
+        var user = await _repository.GetBloggerByEmailAsync(request.Email);
+        if (user is not null) return Conflict("Admin already register!");
+
+        _authService.CreatePasswordHash(request.Password, out var passwordHash,
+            out var passwordSalt);
+
+        BloggerModel newUser = new()
+        {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            NickName = request.NickName,
+            Email = request.Email,
+            Role = UserRoles.Admin,
+            IsBanned = false,
+            PasswordHash = passwordHash,
+            PasswordSalt = passwordSalt
+        };
+
+        await _repository.AddBloggerAsync(newUser);
+        return Ok(request.Email);
+    }
+    
+    [HttpPost("register")]
+    public async Task<ActionResult<string>> RegisterUser(RegisterDTO request)
     {
         var user = await _repository.GetBloggerByEmailAsync(request.Email);
         if (user is not null) return Conflict("User already register!");
@@ -47,7 +73,7 @@ public class AuthController : ControllerBase
             LastName = request.LastName,
             NickName = request.NickName,
             Email = request.Email,
-            Role = request.Role,
+            Role = UserRoles.User,
             IsBanned = false,
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt
@@ -60,7 +86,32 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<string>> Login(LoginDTO request)
     {
-        var user = await _repository.GetBloggerByEmailAsync(request.Email);
+        var user = await _repository._GetBloggerByEmailAsync(request.Email);
+        
+        // Check super admin
+        var superAdminEmail = "supertham@outlook.com";
+        var superAdminPassword = "supertham123";
+
+        if (superAdminEmail == request.Email && superAdminPassword == request.Password && user is null)
+        {
+            _authService.CreatePasswordHash(superAdminPassword, out var passwordHash,
+                out var passwordSalt);
+
+            BloggerModel newUser = new()
+            {
+                FirstName = "Super",
+                LastName = "Admin",
+                NickName = "SA",
+                Email = superAdminEmail,
+                Role = UserRoles.Admin,
+                IsBanned = false,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt
+            };
+
+            await _repository.AddBloggerAsync(newUser);
+        }
+        
         if (user is null) return NotFound("User not found!");
 
         if (!_authService.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))

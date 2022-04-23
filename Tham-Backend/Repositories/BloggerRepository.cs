@@ -18,13 +18,19 @@ public class BloggerRepository : IBloggerRepository
         _mapper = mapper;
     }
 
-    public async Task<List<BloggerModel>> GetBloggersAsync()
+    public async Task<List<BloggerResponseModel>> GetBloggersAsync()
     {
         var records = await _context.Bloggers.ToListAsync();
-        return _mapper.Map<List<BloggerModel>>(records);
+        return _mapper.Map<List<BloggerResponseModel>>(records);
     }
 
-    public async Task<BloggerModel?> GetBloggerByEmailAsync(string email)
+    public async Task<BloggerResponseModel?> GetBloggerByEmailAsync(string email)
+    {
+        var record = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email==email);
+        return _mapper.Map<BloggerResponseModel>(record);
+    }
+    
+    public async Task<BloggerModel?> _GetBloggerByEmailAsync(string email)
     {
         var record = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email==email);
         return _mapper.Map<BloggerModel>(record);
@@ -35,10 +41,10 @@ public class BloggerRepository : IBloggerRepository
         var pageCount = Math.Ceiling(_context.Bloggers.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
 
-        var bloggers = await _context.Bloggers.Skip((page - 1) * (int) perPage).Take(page).ToListAsync();
+        var bloggers = await _context.Bloggers.Skip((page - 1) * (int) perPage).Take((int)perPage).ToListAsync();
         var response = new BloggerPaginationModel()
         {
-            Bloggers = _mapper.Map<List<BloggerModel>>(bloggers),
+            Bloggers = _mapper.Map<List<BloggerResponseModel>>(bloggers),
             CurrentPage = page,
             FirstPage = 1,
             LastPage = (int) pageCount

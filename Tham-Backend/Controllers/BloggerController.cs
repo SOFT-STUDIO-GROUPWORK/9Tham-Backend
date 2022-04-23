@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tham_Backend.Models;
 using Tham_Backend.Repositories;
+using Tham_Backend.Services;
 
 namespace Tham_Backend.Controllers;
 
@@ -10,14 +11,16 @@ namespace Tham_Backend.Controllers;
 public class BloggerController : ControllerBase
 {
     private readonly IBloggerRepository _repository;
+    private readonly IUserService _userService;
 
-    public BloggerController(IBloggerRepository repository)
+    public BloggerController(IBloggerRepository repository,IUserService userService)
     {
         _repository = repository;
+        _userService = userService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<BloggerModel>>> GetBloggers()
+    public async Task<ActionResult<List<BloggerResponseModel>>> GetBloggers()
     {
         var bloggers = await _repository.GetBloggersAsync();
         return Ok(bloggers);
@@ -42,7 +45,10 @@ public class BloggerController : ControllerBase
     [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<string>> UpdateBlogger(EditBloggerDTO request)
     {
-        
+        if (_userService.GetRole() == "User")
+        {
+            if (_userService.GetEmail() != request.Email) return Unauthorized("You are not owner of this account!");
+        }
         await _repository.UpdateBloggerAsync(request.Email, request);
         return Ok();
     }

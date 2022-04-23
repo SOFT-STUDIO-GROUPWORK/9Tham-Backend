@@ -25,7 +25,7 @@ public class ArticleTagRepository : IArticleTagRepository
         if (pageCount == 0) pageCount = 1;
         
 
-        var articles = await _context.ArticleTags.Skip((page - 1) * (int) perPage).Take(page).ToListAsync();
+        var articles = await _context.ArticleTags.Skip((page - 1) * (int) perPage).Take((int)perPage).ToListAsync();
         var response = new ArticleTagPaginationModel()
         {
             ArticleTags = _mapper.Map<List<ArticleTagModel>>(articles),

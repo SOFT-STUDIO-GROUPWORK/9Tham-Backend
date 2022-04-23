@@ -22,6 +22,13 @@ public class ArticlesController : ControllerBase
         var articles = await _repository.GetArticlesAsync();
         return Ok(articles);
     }
+    
+    [HttpGet("{search}")]
+    public async Task<ActionResult<List<ArticleModel>>> SearchArticles([FromRoute] string search)
+    {
+        var articles = await _repository.Search();
+        return Ok(articles);
+    }
 
     [HttpGet("{page:min(1)}/{perPage:min(1)}")]
     public async Task<ActionResult<List<ArticlePaginationModel>>> GetArticles([FromRoute] int page, int perPage)
@@ -62,6 +69,7 @@ public class ArticlesController : ControllerBase
     [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<ArticleModel>> DeleteArticle([FromRoute] int id)
     {
+        
         await _repository.DeleteArticleAsync(id);
         return Ok();
     }
