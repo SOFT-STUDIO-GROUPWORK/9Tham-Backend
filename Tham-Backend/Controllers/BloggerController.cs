@@ -31,27 +31,27 @@ public class BloggerController : ControllerBase
         return Ok(bloggers);
     }
 
-    [HttpGet("{id:min(1)}")]
-    public async Task<ActionResult<BloggerModel>> GetBloggerById([FromRoute] int id)
+    [HttpGet("{email}")]
+    public async Task<ActionResult<BloggerModel>> GetBloggerById([FromRoute] string email)
     {
-        var blogger = await _repository.GetBloggerByIdAsync(id);
+        var blogger = await _repository.GetBloggerByEmailAsync(email);
         if (blogger is null) return NotFound("Blogger not found!");
         return Ok(blogger);
     }
 
-    [HttpPut("{id:min(1)}")]
+    [HttpPut("{email}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> UpdateBlogger([FromRoute] int id, [FromBody] BloggerModel bloggerModel)
+    public async Task<ActionResult<string>> UpdateBlogger(EditBloggerDTO request)
     {
-        await _repository.UpdateBloggerAsync(id, bloggerModel);
+        await _repository.UpdateBloggerAsync(request.Email, request);
         return Ok();
     }
 
-    [HttpDelete("{id:min(1)}")]
+    [HttpDelete("{email}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> DeleteBlogger([FromRoute] int id)
+    public async Task<IActionResult> DeleteBlogger([FromRoute] string email)
     {
-        await _repository.DeleteBloggerAsync(id);
+        await _repository.DeleteBloggerAsync(email);
         return Ok();
     }
 }

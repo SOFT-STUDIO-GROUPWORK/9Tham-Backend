@@ -1,17 +1,20 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Tham_Backend.Models;
+using Tham_Backend.Services;
 
 namespace Tham_Backend.Repositories;
 
 public class BloggerRepository : IBloggerRepository
 {
+    private readonly IAuthService _authService;
     private readonly DataContext _context;
     private readonly IMapper _mapper;
 
-    public BloggerRepository(DataContext context, IMapper mapper)
+    public BloggerRepository(DataContext context, IMapper mapper,IAuthService authService)
     {
         _context = context;
+        _authService = authService;
         _mapper = mapper;
     }
 
@@ -21,9 +24,9 @@ public class BloggerRepository : IBloggerRepository
         return _mapper.Map<List<BloggerModel>>(records);
     }
 
-    public async Task<BloggerModel?> GetBloggerByIdAsync(int bloggerId)
+    public async Task<BloggerModel?> GetBloggerByEmailAsync(string email)
     {
-        var record = await _context.Bloggers.FindAsync(bloggerId);
+        var record = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email==email);
         return _mapper.Map<BloggerModel>(record);
     }
     
@@ -53,7 +56,7 @@ public class BloggerRepository : IBloggerRepository
         return blogger.Id;
     }
 
-    public async Task UpdateBloggerAsync(int bloggerId, BloggerModel bloggerModel)
+    public async Task UpdateBloggerAsync(string email, EditBloggerDTO editBloggerDto)
     {
         /*
         var newBlogger = new Bloggers
@@ -71,33 +74,32 @@ public class BloggerRepository : IBloggerRepository
         _context.Bloggers.Update(newBlogger);
         */
         
-        var blogger = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Id == bloggerId);
+        var blogger = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email == email);
+
+        _authService.CreatePasswordHash(editBloggerDto.Password, out var passwordHash,
+            out var passwordSalt);
+        
         if (blogger is not null)
         {
-            blogger.FirstName = bloggerModel.FirstName;
-            blogger.LastName = bloggerModel.LastName;
-            blogger.NickName = bloggerModel.NickName;
-            blogger.Email = bloggerModel.Email;
-            blogger.Role = bloggerModel.Role;
-            blogger.IsBanned = bloggerModel.IsBanned;
+            blogger.FirstName = editBloggerDto.FirstName;
+            blogger.LastName = editBloggerDto.LastName;
+            blogger.NickName = editBloggerDto.NickName;
+            blogger.Email = editBloggerDto.Email;
+            blogger.Role = editBloggerDto.Role;
+            blogger.IsBanned = editBloggerDto.IsBanned;
+            blogger.PasswordHash = passwordHash;
+            blogger.PasswordSalt = passwordSalt;
             await _context.SaveChangesAsync();
         }
     }
 
-    public async Task DeleteBloggerAsync(int bloggerId)
+    public async Task DeleteBloggerAsync(string email)
     {
         var blogger = new Bloggers
         {
-            Id = bloggerId
+            Email = email
         };
         _context.Bloggers.Remove(blogger);
         await _context.SaveChangesAsync();
-    }
-
-    public async Task<BloggerModel?> GetByEmailAsync(string email)
-    {
-        var record = await _context.Bloggers.SingleOrDefaultAsync(blogger => blogger.Email == email);
-
-        return _mapper.Map<BloggerModel>(record);
     }
 }

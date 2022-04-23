@@ -36,7 +36,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<string>> Register(RegisterDTO request)
     {
-        var user = await _repository.GetByEmailAsync(request.Email);
+        var user = await _repository.GetBloggerByEmailAsync(request.Email);
         if (user is not null) return Conflict("User already register!");
 
         _authService.CreatePasswordHash(request.Password, out var passwordHash,
@@ -62,7 +62,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<string>> Login(LoginDTO request)
     {
-        var user = await _repository.GetByEmailAsync(request.Email);
+        var user = await _repository.GetBloggerByEmailAsync(request.Email);
         if (user is null) return NotFound("User not found!");
 
         if (!_authService.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
