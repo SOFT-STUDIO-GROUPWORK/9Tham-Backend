@@ -17,17 +17,17 @@ public class ArticlesController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet]
+    [HttpGet("all")]
     public async Task<ActionResult<List<ArticleModel>>> GetArticles()
     {
         var articles = await _repository.GetArticlesAsync();
         return Ok(articles);
     }
 
-    [HttpGet("paginate/{page}")]
-    public async Task<ActionResult<List<ArticleModel>>> GetArticles([FromRoute] int page)
+    [HttpGet("{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<List<ArticleModel>>> GetArticles([FromRoute] int page,[FromRoute] int perPage)
     {
-        var articles = await _repository.GetPaginatedArticles(page);
+        var articles = await _repository.GetPaginatedArticles(page,(float)perPage);
         return Ok(articles);
     }
 

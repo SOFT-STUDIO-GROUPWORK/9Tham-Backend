@@ -21,9 +21,8 @@ public class ArticleRepository : IArticleRepository
         return _mapper.Map<List<ArticleModel>>(records);
     }
 
-    public async Task<ArticleResponseModel> GetPaginatedArticles(int page)
+    public async Task<ArticleResponseModel> GetPaginatedArticles(int page,float perPage)
     {
-        const float perPage = 10f;
         var pageCount = Math.Ceiling(_context.Articles.Count() / perPage);
         if (pageCount == 0)
         {
