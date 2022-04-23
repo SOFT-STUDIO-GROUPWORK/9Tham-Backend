@@ -13,16 +13,16 @@ public class LikeRepository: ILikeRepository
         _context = context;
         _mapper = mapper;
     }
-    public async Task<List<LikeModel>> GetLikesAsync()
+    public async Task<List<Likes>> GetLikesAsync()
     {
         var records = await _context.Likes.ToListAsync();
-        return _mapper.Map<List<LikeModel>>(records);
+        return _mapper.Map<List<Likes>>(records);
     }
 
-    public async Task<LikeModel?> GetLikeByIdAsync(int likeId)
+    public async Task<Likes?> GetLikeByIdAsync(int likeId)
     {
         var record = await _context.Likes.FindAsync(likeId);
-        return _mapper.Map<LikeModel>(record);
+        return _mapper.Map<Likes>(record);
     }
 
     public async Task<int> AddLikeAsync(LikeModel likeModel)
