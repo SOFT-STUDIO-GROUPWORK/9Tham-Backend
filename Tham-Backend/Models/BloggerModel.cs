@@ -14,8 +14,8 @@ public class BloggerModel
 
     public bool IsBanned { get; set; }
     
-    public string ImageUrl { get; set; }
-    public string BannerUrl { get; set; }
+    public string ImageUrl { get; set; }  = string.Empty;
+    public string BannerUrl { get; set; }  = string.Empty;
 
     public byte[] PasswordHash { get; set; }
 
