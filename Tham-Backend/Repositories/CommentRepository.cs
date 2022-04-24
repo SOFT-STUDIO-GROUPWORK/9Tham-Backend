@@ -28,6 +28,7 @@ public class CommentRepository:ICommentRepository
     public async Task<int> AddCommentAsync(CommentModel commentModel)
     {
         var comment = _mapper.Map<Comments>(commentModel);
+        comment.Published = DateTime.Now;
 
         await _context.Comments.AddAsync(comment);
         await _context.SaveChangesAsync();
