@@ -39,6 +39,7 @@ builder.Services.AddTransient<ILikeRepository, LikeRepository>();
 builder.Services.AddTransient<IArticleTagRepository, ArticleTagRepository>();
 builder.Services.AddTransient<ICommentRepository, CommentRepository>();
 builder.Services.AddTransient<IAnnouncementRepository, AnnouncementRepository>();
+builder.Services.AddTransient<ICommentLikeRepository, CommentLikeRepository>();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddCors(option =>
 {
