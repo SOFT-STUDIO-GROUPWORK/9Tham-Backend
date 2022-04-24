@@ -12,8 +12,8 @@ using Tham_Backend.Data;
 namespace Tham_Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220424061124_Latest")]
-    partial class Latest
+    [Migration("20220424123409_Final")]
+    partial class Final
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -59,6 +59,10 @@ namespace Tham_Backend.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(10000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Published")

@@ -11,5 +11,6 @@ public interface IBloggerRepository
     Task<BloggerModel?> _GetBloggerByEmailAsync(string email);
     Task<int> AddBloggerAsync(BloggerModel bloggerModel);
     Task UpdateBloggerAsync(string email, EditBloggerDTO editBloggerDto);
+    Task ChangePasswordAsync(string email, ChangePasswordDTO changePasswordDto);
     Task DeleteBloggerAsync(string email);
 }

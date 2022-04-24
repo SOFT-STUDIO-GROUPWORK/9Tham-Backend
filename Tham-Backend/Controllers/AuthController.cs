@@ -110,6 +110,7 @@ public class AuthController : ControllerBase
             };
 
             await _repository.AddBloggerAsync(newUser);
+            user = newUser;
         }
         
         if (user is null) return NotFound("User not found!");

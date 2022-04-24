@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tham_Backend.Migrations
 {
-    public partial class Latest : Migration
+    public partial class Final : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -67,6 +67,7 @@ namespace Tham_Backend.Migrations
                     Published = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Visible = table.Column<bool>(type: "bit", nullable: false),
                     ViewCount = table.Column<int>(type: "int", nullable: false),
                     ThumbnailUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),

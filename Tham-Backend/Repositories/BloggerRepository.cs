@@ -83,17 +83,27 @@ public class BloggerRepository : IBloggerRepository
     {
         var blogger = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email == email);
 
-        _authService.CreatePasswordHash(editBloggerDto.Password, out var passwordHash,
+        if (blogger is not null)
+        {
+            blogger.Email = editBloggerDto.Email;
+            blogger.FirstName = editBloggerDto.FirstName;
+            blogger.LastName = editBloggerDto.LastName;
+            blogger.NickName = editBloggerDto.NickName;
+            blogger.Role = editBloggerDto.Role;
+            blogger.IsBanned = editBloggerDto.IsBanned;
+            await _context.SaveChangesAsync();
+        }
+    }
+    
+    public async Task ChangePasswordAsync(string email, ChangePasswordDTO changePasswordDTO)
+    {
+        var blogger = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email == email);
+
+        _authService.CreatePasswordHash(changePasswordDTO.Password, out var passwordHash,
             out var passwordSalt);
         
         if (blogger is not null)
         {
-            blogger.FirstName = editBloggerDto.FirstName;
-            blogger.LastName = editBloggerDto.LastName;
-            blogger.NickName = editBloggerDto.NickName;
-            blogger.Email = editBloggerDto.Email;
-            blogger.Role = editBloggerDto.Role;
-            blogger.IsBanned = editBloggerDto.IsBanned;
             blogger.PasswordHash = passwordHash;
             blogger.PasswordSalt = passwordSalt;
             await _context.SaveChangesAsync();

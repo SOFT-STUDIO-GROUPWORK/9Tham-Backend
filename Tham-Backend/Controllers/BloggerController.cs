@@ -48,15 +48,27 @@ public class BloggerController : ControllerBase
         return Ok(blogger);
     }
 
-    [HttpPut("{email}")]
+    [HttpPatch("{email}")]
     [Authorize(Roles = "Admin,User")]
-    public async Task<IActionResult> UpdateBlogger(EditBloggerDTO request)
+    public async Task<IActionResult> UpdateBlogger([FromRoute] string email,EditBloggerDTO request)
     {
         if (_userService.GetRole() == "User")
         {
             if (_userService.GetEmail() != request.Email) return Unauthorized("You are not owner of this account!");
         }
-        await _repository.UpdateBloggerAsync(request.Email, request);
+        await _repository.UpdateBloggerAsync(email, request);
+        return Ok();
+    }
+    
+    [HttpPatch("changePassword")]
+    [Authorize(Roles = "Admin,User")]
+    public async Task<IActionResult> ChangePasswordBlogger(ChangePasswordDTO request)
+    {
+        if (_userService.GetRole() == "User")
+        {
+            if (_userService.GetEmail() != request.Email) return Unauthorized("You are not owner of this account!");
+        }
+        await _repository.ChangePasswordAsync(request.Email, request);
         return Ok();
     }
 
