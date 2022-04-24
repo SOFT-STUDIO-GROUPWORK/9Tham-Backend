@@ -6,7 +6,6 @@ public interface IBloggerRepository
 {
     Task<List<BloggerResponseModel>> GetBloggersAsync();
     Task<BloggerResponseModel?> GetBloggerByIdAsync(int id);
-    Task<BloggerResponseModel?> GetBloggerByJwtAsync();
     Task<BloggerPaginationModel> GetBloggersPaginated(int page, float perPage);
     Task<BloggerPaginationModel> SearchBloggersPaginated(int page, float perPage, string search);
     public Task<List<Articles>?> GetBloggerArticles(string email);

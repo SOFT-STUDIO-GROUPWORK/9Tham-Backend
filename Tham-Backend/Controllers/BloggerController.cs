@@ -50,10 +50,12 @@ public class BloggerController : ControllerBase
         return Ok(blogger);
     }
     
-    [HttpGet("/myself")]
+    [HttpGet("myself")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<BloggerResponseModel>> GetBloggerByJwt()
     {
-        var blogger = await _repository.GetBloggerByJwtAsync();
+        var email =  _userService.GetEmail();
+        var blogger = await _repository.GetBloggerByEmailAsync(email);
         if (blogger is null) return NotFound("Blogger not found!");
         return Ok(blogger);
     }

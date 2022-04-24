@@ -58,12 +58,6 @@ public class BloggerRepository : IBloggerRepository
         return _mapper.Map<BloggerModel>(record);
     }
     
-    public async Task<BloggerResponseModel?> GetBloggerByJwtAsync()
-    {
-        var record = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email==_userService.GetEmail());
-        return _mapper.Map<BloggerResponseModel>(record);
-    }
-    
     public async Task<BloggerPaginationModel> GetBloggersPaginated(int page,float perPage)
     {
         var pageCount = Math.Ceiling(_context.Bloggers.Count() / perPage);
