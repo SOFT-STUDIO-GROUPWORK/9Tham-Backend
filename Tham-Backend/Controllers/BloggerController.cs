@@ -89,7 +89,7 @@ public class BloggerController : ControllerBase
 
         var blogger = (await _repository._GetBloggerByEmailAsync(request.Email));
         if (blogger is null) return NotFound("Blogger not found!");
-        if (!_authService.VerifyPasswordHash(request.Password, blogger.PasswordHash, blogger.PasswordSalt))
+        if (!_authService.VerifyPasswordHash(request.OldPassword, blogger.PasswordHash, blogger.PasswordSalt))
             return BadRequest("Wrong password.");
         
         await _repository.ChangePasswordAsync(request.Email, request);
