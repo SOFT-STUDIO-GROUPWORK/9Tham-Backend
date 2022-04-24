@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
+using Tham_Backend.Models;
 using Tham_Backend.Repositories;
 using Tham_Backend.Services;
 
@@ -37,6 +38,7 @@ builder.Services.AddTransient<ITagRepository, TagRepository>();
 builder.Services.AddTransient<ILikeRepository, LikeRepository>();
 builder.Services.AddTransient<IArticleTagRepository, ArticleTagRepository>();
 builder.Services.AddTransient<ICommentRepository, CommentRepository>();
+builder.Services.AddTransient<IAnnouncementRepository, AnnouncementRepository>();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddCors(option =>
 {

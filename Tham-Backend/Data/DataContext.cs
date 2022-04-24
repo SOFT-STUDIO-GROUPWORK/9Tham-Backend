@@ -15,4 +15,5 @@ public class DataContext : DbContext
     public DbSet<ArticleTags> ArticleTags { get; set; }
     public DbSet<Likes> Likes { get; set; }
     public DbSet<Comments> Comments { get; set; }
+    public DbSet<Announcements> Announcements { get; set; }
 }
