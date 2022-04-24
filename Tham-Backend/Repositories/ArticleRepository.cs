@@ -85,6 +85,7 @@ public class ArticleRepository : IArticleRepository
             article.Title = articleModel.Title;
             article.Content = articleModel.Content;
             article.Visible = articleModel.Visible;
+            article.Description = articleModel.Description;
             await _context.SaveChangesAsync();
         }
     }
