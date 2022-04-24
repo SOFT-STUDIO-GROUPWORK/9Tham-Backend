@@ -47,6 +47,14 @@ public class BloggerController : ControllerBase
         if (blogger is null) return NotFound("Blogger not found!");
         return Ok(blogger);
     }
+    
+    [HttpGet("{email}/articles")]
+    public async Task<ActionResult<Articles>> GetBloggerArticles([FromRoute] string email)
+    {
+        var articles = await _repository.GetBloggerArticles(email);
+        if (articles is null) return NotFound("Blogger's articles not found!");
+        return Ok(articles);
+    }
 
     [HttpPatch("{email}")]
     [Authorize(Roles = "Admin,User")]
