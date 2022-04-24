@@ -8,13 +8,15 @@ namespace Tham_Backend.Repositories;
 public class BloggerRepository : IBloggerRepository
 {
     private readonly IAuthService _authService;
+    private readonly IUserService _userService;
     private readonly DataContext _context;
     private readonly IMapper _mapper;
 
-    public BloggerRepository(DataContext context, IMapper mapper,IAuthService authService)
+    public BloggerRepository(DataContext context, IMapper mapper,IAuthService authService,IUserService userService)
     {
         _context = context;
         _authService = authService;
+        _userService = userService;
         _mapper = mapper;
     }
 
@@ -54,6 +56,12 @@ public class BloggerRepository : IBloggerRepository
     {
         var record = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email==email);
         return _mapper.Map<BloggerModel>(record);
+    }
+    
+    public async Task<BloggerResponseModel?> GetBloggerByJwtAsync()
+    {
+        var record = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email==_userService.GetEmail());
+        return _mapper.Map<BloggerResponseModel>(record);
     }
     
     public async Task<BloggerPaginationModel> GetBloggersPaginated(int page,float perPage)

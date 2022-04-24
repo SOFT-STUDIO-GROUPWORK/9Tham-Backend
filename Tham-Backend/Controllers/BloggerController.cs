@@ -12,10 +12,12 @@ public class BloggerController : ControllerBase
 {
     private readonly IBloggerRepository _repository;
     private readonly IUserService _userService;
+    private readonly IAuthService _authService;
 
-    public BloggerController(IBloggerRepository repository,IUserService userService)
+    public BloggerController(IBloggerRepository repository,IUserService userService,IAuthService authService)
     {
         _repository = repository;
+        _authService = authService;
         _userService = userService;
     }
 
@@ -48,6 +50,14 @@ public class BloggerController : ControllerBase
         return Ok(blogger);
     }
     
+    [HttpGet("/myself")]
+    public async Task<ActionResult<BloggerResponseModel>> GetBloggerByJwt()
+    {
+        var blogger = await _repository.GetBloggerByJwtAsync();
+        if (blogger is null) return NotFound("Blogger not found!");
+        return Ok(blogger);
+    }
+    
     [HttpGet("{email}/articles")]
     public async Task<ActionResult<Articles>> GetBloggerArticles([FromRoute] string email)
     {
@@ -76,6 +86,12 @@ public class BloggerController : ControllerBase
         {
             if (_userService.GetEmail() != request.Email) return Unauthorized("You are not owner of this account!");
         }
+
+        var blogger = (await _repository._GetBloggerByEmailAsync(request.Email));
+        if (blogger is null) return NotFound("Blogger not found!");
+        if (!_authService.VerifyPasswordHash(request.Password, blogger.PasswordHash, blogger.PasswordSalt))
+            return BadRequest("Wrong password.");
+        
         await _repository.ChangePasswordAsync(request.Email, request);
         return Ok();
     }
