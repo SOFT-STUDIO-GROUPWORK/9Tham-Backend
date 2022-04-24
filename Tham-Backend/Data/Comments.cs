@@ -19,4 +19,6 @@ public class Comments
     [JsonIgnore]
     public Articles Article { get; set; }//NavigationReference
     public int ArticleId { get; set; } //FK
+    
+    public List<CommentLikes> CommentLikes { get; set; }//for FK on CommentLikes table
 }

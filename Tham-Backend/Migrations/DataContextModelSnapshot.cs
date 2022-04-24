@@ -162,6 +162,29 @@ namespace Tham_Backend.Migrations
                     b.ToTable("Bloggers");
                 });
 
+            modelBuilder.Entity("Tham_Backend.Data.CommentLikes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("BloggerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BloggerId");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("CommentLikes");
+                });
+
             modelBuilder.Entity("Tham_Backend.Data.Comments", b =>
                 {
                     b.Property<int>("Id")
@@ -267,6 +290,23 @@ namespace Tham_Backend.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("Tham_Backend.Data.CommentLikes", b =>
+                {
+                    b.HasOne("Tham_Backend.Data.Bloggers", "Blogger")
+                        .WithMany("CommentLikes")
+                        .HasForeignKey("BloggerId");
+
+                    b.HasOne("Tham_Backend.Data.Comments", "Comment")
+                        .WithMany("CommentLikes")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blogger");
+
+                    b.Navigation("Comment");
+                });
+
             modelBuilder.Entity("Tham_Backend.Data.Comments", b =>
                 {
                     b.HasOne("Tham_Backend.Data.Articles", "Article")
@@ -314,9 +354,16 @@ namespace Tham_Backend.Migrations
                 {
                     b.Navigation("Articles");
 
+                    b.Navigation("CommentLikes");
+
                     b.Navigation("Comments");
 
                     b.Navigation("Likes");
+                });
+
+            modelBuilder.Entity("Tham_Backend.Data.Comments", b =>
+                {
+                    b.Navigation("CommentLikes");
                 });
 
             modelBuilder.Entity("Tham_Backend.Data.Tags", b =>

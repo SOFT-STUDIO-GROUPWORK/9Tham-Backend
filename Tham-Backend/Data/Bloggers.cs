@@ -31,4 +31,6 @@ public class Bloggers
     public List<Comments> Comments { get; set; }//for FK on Comments table
     [JsonIgnore]
     public List<Likes> Likes { get; set; }//for FK on Likes table
+    [JsonIgnore] 
+    public List<CommentLikes> CommentLikes { get; set; }//for FK on CommentLikes table
 }

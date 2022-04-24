@@ -12,8 +12,8 @@ using Tham_Backend.Data;
 namespace Tham_Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220423104424_AddBannerUrl")]
-    partial class AddBannerUrl
+    [Migration("20220424061124_Latest")]
+    partial class Latest
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,27 @@ namespace Tham_Backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Tham_Backend.Data.Announcements", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Announcements");
+                });
 
             modelBuilder.Entity("Tham_Backend.Data.Articles", b =>
                 {
@@ -37,8 +58,8 @@ namespace Tham_Backend.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
+                        .HasMaxLength(10000)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Published")
                         .HasColumnType("datetime2");
@@ -141,6 +162,29 @@ namespace Tham_Backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Bloggers");
+                });
+
+            modelBuilder.Entity("Tham_Backend.Data.CommentLikes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("BloggerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BloggerId");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("CommentLikes");
                 });
 
             modelBuilder.Entity("Tham_Backend.Data.Comments", b =>
@@ -248,6 +292,23 @@ namespace Tham_Backend.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("Tham_Backend.Data.CommentLikes", b =>
+                {
+                    b.HasOne("Tham_Backend.Data.Bloggers", "Blogger")
+                        .WithMany("CommentLikes")
+                        .HasForeignKey("BloggerId");
+
+                    b.HasOne("Tham_Backend.Data.Comments", "Comment")
+                        .WithMany("CommentLikes")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blogger");
+
+                    b.Navigation("Comment");
+                });
+
             modelBuilder.Entity("Tham_Backend.Data.Comments", b =>
                 {
                     b.HasOne("Tham_Backend.Data.Articles", "Article")
@@ -295,9 +356,16 @@ namespace Tham_Backend.Migrations
                 {
                     b.Navigation("Articles");
 
+                    b.Navigation("CommentLikes");
+
                     b.Navigation("Comments");
 
                     b.Navigation("Likes");
+                });
+
+            modelBuilder.Entity("Tham_Backend.Data.Comments", b =>
+                {
+                    b.Navigation("CommentLikes");
                 });
 
             modelBuilder.Entity("Tham_Backend.Data.Tags", b =>

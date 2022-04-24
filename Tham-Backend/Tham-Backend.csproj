@@ -30,7 +30,6 @@
 
     <ItemGroup>
       <Folder Include="Buffer" />
-      <Folder Include="Migrations" />
     </ItemGroup>
 
 </Project>
