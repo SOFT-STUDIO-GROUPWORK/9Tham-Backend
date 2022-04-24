@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tham_Backend.Models;
 using Tham_Backend.Repositories;
+using Tham_Backend.Services;
 
 namespace Tham_Backend.Controllers;
 
@@ -10,9 +11,11 @@ namespace Tham_Backend.Controllers;
 public class CommentsController : ControllerBase
 {
     private readonly ICommentRepository _repository;
-    public CommentsController(ICommentRepository repository)
+    private readonly IUserService _userService;
+    public CommentsController(ICommentRepository repository, IUserService userService)
     {
         _repository = repository;
+        _userService = userService;
     }
     
     [HttpGet]
@@ -44,17 +47,45 @@ public class CommentsController : ControllerBase
 
     [HttpPut("{id:min(1)}")]
     [Authorize(Roles = "Admin,User")]
-    public async Task<IActionResult> UpdateComment([FromRoute] int id, [FromBody] CommentModel commentModel)
+    public async Task<IActionResult> UpdateComment([FromRoute] int id, [FromBody] CommentModel commentModel,  [FromServices]IBloggerRepository bloggerRepository)
     {
-        await _repository.UpdateCommentAsync(id, commentModel);
-        return Ok();
+        var oldComment = await _repository.GetCommentByIdAsync(id);
+        if (oldComment is not null)
+        { 
+            var user = await bloggerRepository.GetBloggerByIdAsync((int) oldComment.BloggerId);
+            if (user is not null)
+            {
+                if (_userService.GetRole() == "User")
+                {
+                    if (_userService.GetEmail() != user.Email) return Unauthorized("You are not owner of this account!");
+                }
+                await _repository.UpdateCommentAsync(id, commentModel);
+                return Ok();
+            }
+        }
+
+        return NotFound();
     }
 
     [HttpDelete("{id:min(1)}")]
     [Authorize(Roles = "Admin,User")]
-    public async Task<IActionResult> DeleteComment([FromRoute] int id)
+    public async Task<IActionResult> DeleteComment([FromRoute] int id, [FromServices]IBloggerRepository bloggerRepository)
     {
-        await _repository.DeleteCommentAsync(id);
-        return Ok();
+        var oldComment = await _repository.GetCommentByIdAsync(id);
+        if (oldComment is not null)
+        { 
+            var user = await bloggerRepository.GetBloggerByIdAsync((int) oldComment.BloggerId);
+            if (user is not null)
+            {
+                if (_userService.GetRole() == "User")
+                {
+                    if (_userService.GetEmail() != user.Email) return Unauthorized("You are not owner of this account!");
+                }
+                await _repository.DeleteCommentAsync(id);
+                return Ok();
+            }
+        }
+        
+        return NotFound();
     }
 }

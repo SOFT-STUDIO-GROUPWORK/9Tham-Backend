@@ -24,6 +24,12 @@ public class BloggerRepository : IBloggerRepository
         return _mapper.Map<List<BloggerResponseModel>>(records);
     }
     
+    public async Task<BloggerResponseModel?> GetBloggerByIdAsync(int id)
+    {
+        var record = await _context.Bloggers.FindAsync(id);
+        return _mapper.Map<BloggerResponseModel>(record);
+    }
+    
     public async Task<List<Articles>?> GetBloggerArticles(string email)
     {
         var record = await _context.Bloggers.Include(b=>b.Articles).FirstOrDefaultAsync(x=>x.Email==email);

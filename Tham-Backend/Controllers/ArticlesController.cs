@@ -69,7 +69,6 @@ public class ArticlesController : ControllerBase
     [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<Articles>> DeleteArticle([FromRoute] int id)
     {
-        
         await _repository.DeleteArticleAsync(id);
         return Ok();
     }

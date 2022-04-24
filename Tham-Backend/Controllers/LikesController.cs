@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tham_Backend.Models;
 using Tham_Backend.Repositories;
+using Tham_Backend.Services;
 
 namespace Tham_Backend.Controllers;
 
@@ -10,10 +11,12 @@ namespace Tham_Backend.Controllers;
 public class LikesController : ControllerBase
 {
     private readonly ILikeRepository _repository;
+    private readonly IUserService _userService;
 
-    public LikesController(ILikeRepository repository)
+    public LikesController(ILikeRepository repository, IUserService userService)
     {
         _repository = repository;
+        _userService = userService;
     }
 
     [HttpGet]
@@ -45,17 +48,45 @@ public class LikesController : ControllerBase
 
     [HttpPut("{id:min(1)}")]
     [Authorize(Roles = "Admin,User")]
-    public async Task<IActionResult> UpdateLike([FromRoute] int id, [FromBody] LikeModel likeModel)
+    public async Task<IActionResult> UpdateLike([FromRoute] int id, [FromBody] LikeModel likeModel,[FromServices]IBloggerRepository bloggerRepository)
     {
-        await _repository.UpdateLikeAsync(id, likeModel);
-        return Ok();
+        var oldLike = await _repository.GetLikeByIdAsync(id);
+        if (oldLike is not null)
+        {
+            var user = await bloggerRepository.GetBloggerByIdAsync((int) oldLike.BloggerId);
+            if (user is not null)
+            {
+                if (_userService.GetRole() == "User")
+                {
+                    if (_userService.GetEmail() != user.Email) return Unauthorized("You are not owner of this like!");
+                }
+                await _repository.UpdateLikeAsync(id, likeModel);
+                return Ok();
+            }
+        }
+
+        return NotFound();
     }
 
     [HttpDelete("{id:min(1)}")]
     [Authorize(Roles = "Admin,User")]
-    public async Task<IActionResult> DeleteLike([FromRoute] int id)
+    public async Task<IActionResult> DeleteLike([FromRoute] int id,[FromServices]IBloggerRepository bloggerRepository)
     {
-        await _repository.DeleteLikeAsync(id);
-        return Ok();
+        var oldLike = await _repository.GetLikeByIdAsync(id);
+        if (oldLike is not null)
+        {
+            var user = await bloggerRepository.GetBloggerByIdAsync((int) oldLike.BloggerId);
+            if (user is not null)
+            {
+                if (_userService.GetRole() == "User")
+                {
+                    if (_userService.GetEmail() != user.Email) return Unauthorized("You are not owner of this like!");
+                }
+                await _repository.DeleteLikeAsync(id);
+                return Ok();
+            }
+        }
+
+        return NotFound();
     }
 }
