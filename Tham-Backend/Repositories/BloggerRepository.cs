@@ -23,6 +23,20 @@ public class BloggerRepository : IBloggerRepository
         var records = await _context.Bloggers.ToListAsync();
         return _mapper.Map<List<BloggerResponseModel>>(records);
     }
+    
+    public async Task<List<Articles>?> GetBloggerArticles(string email)
+    {
+        var record = await _context.Bloggers.Include(b=>b.Articles).FirstOrDefaultAsync(x=>x.Email==email);
+        var articles = record?.Articles.ToList();
+        if (articles is null) return null;
+        //XXX: prevent returning Blogger data (bad practice here but it work)
+        foreach(var article in articles)
+        {
+            article.Blogger = null;
+        }
+        return articles;
+
+    }
 
     public async Task<BloggerResponseModel?> GetBloggerByEmailAsync(string email)
     {

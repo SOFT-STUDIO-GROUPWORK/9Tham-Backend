@@ -57,6 +57,7 @@ public class ArticleRepository : IArticleRepository
 
     public async Task<Articles?> GetArticleByIdAsync(int articleId)
     {
+        //FIXME: Comments list is not included in the response
         var article = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.ArticleTags).Include(a=>a.Comments).FirstOrDefaultAsync(x=>x.Id==articleId);
         if (article is not null)
         {
