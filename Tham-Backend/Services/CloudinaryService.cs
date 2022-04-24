@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 
@@ -27,6 +28,17 @@ public class CloudinaryService : ICloudinaryService
         };
         var uploadResult = _cloudinary.Upload(uploadParams);
         return uploadResult;
+    }
+    
+    public DeletionResult DeleteImage(string url)
+    {
+        var publicId = Regex.Match(url, @"\/([A-Z]+).");
+        var publicIdGroup = publicId.Groups[1].Value;
+        var deletionParams = new DeletionParams(publicIdGroup){
+                ResourceType = ResourceType.Image};
+        var deletionResult  = _cloudinary.Destroy(deletionParams);
+        
+        return deletionResult ;
     }
 
     private string RandomName()

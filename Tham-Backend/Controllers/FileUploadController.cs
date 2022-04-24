@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tham_Backend.Models;
@@ -59,6 +60,21 @@ public class FileUploadController : ControllerBase
         catch (Exception exception)
         {
             return BadRequest("Fail to upload, Transfer file error.");
+        }
+    }
+    
+    [HttpDelete("picture")]
+    [Authorize(Roles = "Admin,User")]
+    public async Task<IActionResult> DeletePicture([FromBody] DeleteDTO deleteDto)
+    {
+        try
+        {
+            var deletionResult = _cloudinaryService.DeleteImage(deleteDto.url);
+            return Ok(deletionResult);
+        }
+        catch (Exception exception)
+        {
+            return BadRequest("Fail to delete.");
         }
     }
 }
