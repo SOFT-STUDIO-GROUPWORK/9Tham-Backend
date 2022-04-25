@@ -82,11 +82,11 @@ public class TagRepository : ITagRepository
 
     public async Task DeleteTagAsync(int tagId)
     {
-        var tag = new Tags()
+        var tag = await _context.Tags.FindAsync(tagId);
+        if (tag is not null)
         {
-            Id = tagId,
-        };
-        _context.Tags.Remove(tag);
-        await _context.SaveChangesAsync();
+            _context.Tags.Remove(tag);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -46,11 +46,11 @@ public class ArticleTagRepository : IArticleTagRepository
 
     public async Task DeleteArticleTagAsync(int articleTagId)
     {
-        var articleTag = new ArticleTags()
+        var articleTag = await _context.ArticleTags.FindAsync(articleTagId);
+        if (articleTag is not null)
         {
-            Id = articleTagId
-        };
-        _context.ArticleTags.Remove(articleTag);
-        await _context.SaveChangesAsync();
+            _context.ArticleTags.Remove(articleTag);
+            await _context.SaveChangesAsync();
+        }
     }
 }

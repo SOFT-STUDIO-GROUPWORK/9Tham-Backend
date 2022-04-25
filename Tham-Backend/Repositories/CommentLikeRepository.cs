@@ -45,11 +45,11 @@ public class CommentLikeRepository : ICommentLikeRepository
 
     public async Task DeleteCommentLikeAsync(int commentLikeId)
     {
-        var commentLike = new CommentLikes()
+        var commentLike = await _context.CommentLikes.FindAsync(commentLikeId);
+        if (commentLike is not null)
         {
-            Id = commentLikeId
-        };
-        _context.CommentLikes.Remove(commentLike);
-        await _context.SaveChangesAsync();
+            _context.CommentLikes.Remove(commentLike);
+            await _context.SaveChangesAsync();
+        }
     }
 }

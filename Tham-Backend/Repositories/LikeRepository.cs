@@ -46,11 +46,11 @@ public class LikeRepository: ILikeRepository
 
     public async Task DeleteLikeAsync(int likeId)
     {
-        var like = new Likes
+        var like = await _context.Likes.FindAsync(likeId);
+        if (like is not null)
         {
-            Id = likeId
-        };
-        _context.Likes.Remove(like);
-        await _context.SaveChangesAsync();
+            _context.Likes.Remove(like);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -47,11 +47,11 @@ public class CommentRepository:ICommentRepository
 
     public async Task DeleteCommentAsync(int commentId)
     {
-        var comment = new Comments
+        var comment = await _context.Comments.FindAsync(commentId);
+        if (comment is not null)
         {
-            Id = commentId
-        };
-        _context.Comments.Remove(comment);
-        await _context.SaveChangesAsync();
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+        }
     }
 }

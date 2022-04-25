@@ -86,18 +86,20 @@ public class ArticleRepository : IArticleRepository
             article.Title = articleModel.Title;
             article.Content = articleModel.Content;
             article.Visible = articleModel.Visible;
+            article.ThumbnailUrl = articleModel.ThumbnailUrl;
             article.Description = articleModel.Description;
+            article.BloggerId = articleModel.BloggerId;
             await _context.SaveChangesAsync();
         }
     }
 
     public async Task DeleteArticleAsync(int articleId)
     {
-        var article = new Articles()
+        var article = await _context.Articles.FirstOrDefaultAsync(x=>x.Id == articleId);
+        if (article is not null)
         {
-            Id = articleId,
-        };
-        _context.Articles.Remove(article);
-        await _context.SaveChangesAsync();
+            _context.Articles.Remove(article);
+            await _context.SaveChangesAsync();
+        }
     }
 }

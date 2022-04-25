@@ -102,6 +102,8 @@ public class BloggerController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteBlogger([FromRoute] string email)
     {
+        var blogger = await _repository._GetBloggerByEmailAsync(email);
+        if (blogger is null) return NotFound("Blogger not found!");
         await _repository.DeleteBloggerAsync(email);
         return Ok();
     }

@@ -113,6 +113,8 @@ public class BloggerRepository : IBloggerRepository
             blogger.NickName = editBloggerDto.NickName;
             blogger.Role = editBloggerDto.Role;
             blogger.IsBanned = editBloggerDto.IsBanned;
+            blogger.ImageUrl = editBloggerDto.ImageUrl;
+            blogger.BannerUrl = editBloggerDto.BannerUrl;
             await _context.SaveChangesAsync();
         }
     }
@@ -134,11 +136,11 @@ public class BloggerRepository : IBloggerRepository
 
     public async Task DeleteBloggerAsync(string email)
     {
-        var blogger = new Bloggers
+        var blogger = await _context.Bloggers.FirstOrDefaultAsync(x=>x.Email == email);
+        if (blogger is not null)
         {
-            Email = email
-        };
-        _context.Bloggers.Remove(blogger);
-        await _context.SaveChangesAsync();
+            _context.Bloggers.Remove(blogger);
+            await _context.SaveChangesAsync();
+        }
     }
 }

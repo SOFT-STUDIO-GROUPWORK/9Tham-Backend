@@ -45,11 +45,11 @@ public class AnnouncementRepository: IAnnouncementRepository
 
     public async Task DeleteAnnouncementAsync(int announcementId)
     {
-        var announcement = new Announcements()
+        var announcement = await _context.Announcements.FirstOrDefaultAsync(x=>x.Id==announcementId);
+        if (announcement is not null)
         {
-            Id = announcementId
-        };
         _context.Announcements.Remove(announcement);
         await _context.SaveChangesAsync();
+        }
     }
 }
