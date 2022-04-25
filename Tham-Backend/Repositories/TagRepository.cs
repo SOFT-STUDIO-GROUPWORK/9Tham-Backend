@@ -30,7 +30,7 @@ public class TagRepository : ITagRepository
         var tags = qureyWhere.Skip((page - 1) * (int) perPage).Take((int)perPage);
         var response = new TagPaginationModel()
         {
-            Tags = _mapper.Map<List<TagModel>>(tags),
+            Tags = _mapper.Map<List<Tags>>(tags),
             CurrentPage = page,
             FirstPage = 1,
             LastPage = (int) pageCount
@@ -47,7 +47,7 @@ public class TagRepository : ITagRepository
         var tags = await _context.Tags.Skip((page - 1) * (int) perPage).Take((int)perPage).ToListAsync();
         var response = new TagPaginationModel()
         {
-            Tags = _mapper.Map<List<TagModel>>(tags),
+            Tags = _mapper.Map<List<Tags>>(tags),
             CurrentPage = page,
             FirstPage = 1,
             LastPage = (int) pageCount

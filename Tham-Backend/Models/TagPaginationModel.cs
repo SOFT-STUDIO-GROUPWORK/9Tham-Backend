@@ -2,7 +2,7 @@
 
 public class TagPaginationModel
 {
-    public List<TagModel> Tags { get; set; } = new();
+    public List<Tags> Tags { get; set; } = new();
     
     public int FirstPage { get; set; }
 
