@@ -99,9 +99,14 @@ public class BloggerController : ControllerBase
     }
 
     [HttpDelete("{email}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> DeleteBlogger([FromRoute] string email)
     {
+        if (_userService.GetRole() == "User")
+        {
+            if (_userService.GetEmail() != email) return Unauthorized("You are not owner of this account!");
+        }
+        
         var blogger = await _repository._GetBloggerByEmailAsync(email);
         if (blogger is null) return NotFound("Blogger not found!");
         await _repository.DeleteBloggerAsync(email);
