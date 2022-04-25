@@ -38,6 +38,23 @@ public class ArticleRepository : IArticleRepository
         return response;
     }
     
+    public async Task<ArticlePaginationModel> GetReverseArticlesPaginated(int page,float perPage)
+    {
+        var pageCount = Math.Ceiling(_context.Articles.Count() / perPage);
+        if (pageCount == 0) pageCount = 1;
+        var reverseDB = await _context.Articles.Include(a=>a.ArticleTags).ToListAsync();
+        reverseDB = Enumerable.Reverse(reverseDB).ToList();
+        var articles = reverseDB.Skip((page - 1) * (int) perPage).Take((int) perPage);
+        var response = new ArticlePaginationModel()
+        {
+            Articles = _mapper.Map<List<Articles>>(articles),
+            CurrentPage = page,
+            FirstPage = 1,
+            LastPage = (int) pageCount
+        };
+        return response;
+    }
+    
     public async Task<ArticlePaginationModel> SearchArticlesPaginated(int page,float perPage, string search)
     {
         var qureyWhere = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.ArticleTags).Where(e => e.Title.Contains(search) || e.Content.Contains(search)).ToListAsync();

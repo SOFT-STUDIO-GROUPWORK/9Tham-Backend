@@ -36,6 +36,13 @@ public class ArticlesController : ControllerBase
         var articles = await _repository.GetArticlesPaginated(page,(float)perPage);
         return Ok(articles);
     }
+    
+    [HttpGet("reverse/{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<ArticlePaginationModel>> GetReverseArticles([FromRoute] int page, int perPage)
+    {
+        var articles = await _repository.GetReverseArticlesPaginated(page,(float)perPage);
+        return Ok(articles);
+    }
 
     [HttpGet("{id:min(1)}")]
     public async Task<ActionResult<Articles>> GetArticle([FromRoute] int id)
