@@ -65,11 +65,11 @@ public class ArticleRepository : IArticleRepository
             .Include(a => a.ArticleTags).ThenInclude(at => at.Tag)
             .Where(e => e.Visible == true);
 
-        if (search is not null)
+        if (string.IsNullOrEmpty(search))
         {
             tempQuery = tempQuery.Where(e => e.Title.Contains(search) || e.Content.Contains(search));
         }
-        if (tagId is not null)
+        if (string.IsNullOrEmpty(tagId))
         {
             tempQuery = tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId)));
         }
@@ -99,11 +99,11 @@ public class ArticleRepository : IArticleRepository
             .Include(a => a.ArticleTags).ThenInclude(at => at.Tag)
             .Where(e => e.Visible == true);
 
-        if (search is not null)
+        if (string.IsNullOrEmpty(search))
         {
             tempQuery = tempQuery.Where(e => e.Title.Contains(search) || e.Content.Contains(search));
         }
-        if (tagId is not null)
+        if (string.IsNullOrEmpty(tagId))
         {
             tempQuery = tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId)));
         }
