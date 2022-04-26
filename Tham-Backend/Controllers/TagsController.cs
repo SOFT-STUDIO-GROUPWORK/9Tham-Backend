@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tham_Backend.Models;
@@ -9,10 +10,12 @@ namespace Tham_Backend.Controllers;
 public class TagsController : ControllerBase
 {
     private readonly ITagRepository _repository;
+    private readonly IMapper _mapper;
     
-    public TagsController(ITagRepository repository)
+    public TagsController(ITagRepository repository,IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
     
     [HttpGet]
@@ -61,6 +64,34 @@ public class TagsController : ControllerBase
         return Ok(result);
     }
     
+    [HttpGet("{id:min(1)}/{page:min(1)}/{perPage:min(1)}/articles")]
+    public async Task<ActionResult<ArticlePaginationModel>> GetPaginatedArticleByTagId([FromRoute]int id,int page, int perPage,[FromServices]IArticleRepository articleRepository)
+    {
+        var tag = await _repository.GetTagByIdAsync(id);
+        if (tag is null)
+        {
+            return NotFound("Tag not found!");
+        }
+
+        var articles = await articleRepository.GetArticlesAsync();
+        var result = articles.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == id)).ToList();
+        
+        var pageCount = Math.Ceiling(result.Count() / (float)perPage);
+        if (pageCount == 0) pageCount = 1;
+        
+
+        articles = result.Skip((page - 1) * (int) perPage).Take((int)perPage).ToList();
+        var response = new ArticlePaginationModel()
+        {
+            Articles = _mapper.Map<List<Articles>>(articles),
+            CurrentPage = page,
+            FirstPage = 1,
+            LastPage = (int) pageCount
+        };
+        
+        return Ok(response);
+    }
+
     [HttpPost]
     [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> AddTag([FromBody] TagModel tagModel)
