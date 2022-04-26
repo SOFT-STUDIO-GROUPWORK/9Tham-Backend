@@ -40,7 +40,7 @@ public class LikesController : ControllerBase
     
     [HttpGet("/toggleLikes/{articleId:min(1)}/{bloggerId:min(1)}")]
     [Authorize(Roles = "Admin,User")]
-    public async Task<IActionResult> ToggleLike([FromRoute] int articleId, [FromRoute] int bloggerId, [FromServices]IArticleRepository articleRepository, [FromServices]ILikeRepository likeRepository)
+    public async Task<IActionResult> ToggleLike([FromRoute] int articleId, [FromRoute] int bloggerId, [FromServices]IArticleRepository articleRepository)
     {
         var article = await articleRepository.GetArticleByIdAsync(articleId);
         if (article is null) return NotFound();
@@ -54,12 +54,12 @@ public class LikesController : ControllerBase
                     ArticleId = articleId,
                     BloggerId = bloggerId
             };
-            await likeRepository.AddLikeAsync(likeModel);
+            await _repository.AddLikeAsync(likeModel);
         }
         else
         {
             //remove like
-            await likeRepository.DeleteLikeAsync(matchedLike.Id);
+            await _repository.DeleteLikeAsync(matchedLike.Id);
         }
 
         return Ok();

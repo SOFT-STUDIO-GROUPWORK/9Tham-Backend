@@ -45,6 +45,33 @@ public class CommentLikesController : ControllerBase
         var commentLikeId = await _repository.AddCommentLikeAsync(commentLikeModel);
         return CreatedAtAction(nameof(GetCommentLikeById), new {id = commentLikeId}, commentLikeId);
     }
+    
+    [HttpGet("/toggleLikes/{commentId:min(1)}/{bloggerId:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
+    public async Task<IActionResult> ToggleLike([FromRoute] int commentId, [FromRoute] int bloggerId, [FromServices]ICommentRepository commentRepository)
+    {
+        var comment = await commentRepository.GetCommentByIdAsync(commentId);
+        if (comment is null) return NotFound();
+        
+        var matchedLike = comment.CommentLikes.Find(like => like.BloggerId == bloggerId);
+        if (matchedLike is null)
+        {
+            //add like
+            var commentLikeModel = new CommentLikeModel()
+            {
+                CommentId = commentId,
+                BloggerId = bloggerId
+            };
+            await _repository.AddCommentLikeAsync(commentLikeModel);
+        }
+        else
+        {
+            //remove like
+            await _repository.DeleteCommentLikeAsync(matchedLike.Id);
+        }
+
+        return Ok();
+    }
 
     [HttpPut("{id:min(1)}")]
     [Authorize(Roles = "Admin,User")]
