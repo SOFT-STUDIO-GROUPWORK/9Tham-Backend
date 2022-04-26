@@ -29,6 +29,13 @@ public class ArticlesController : ControllerBase
         var articles = await _repository.SearchArticlesPaginated(page,(float)perPage,search);
         return Ok(articles);
     }
+    
+    [HttpGet("{search}/reverse/{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<ArticlePaginationModel>> SearchReverseArticles([FromRoute] string search,int page, int perPage)
+    {
+        var articles = await _repository.SearchReverseArticlesPaginated(page,(float)perPage,search);
+        return Ok(articles);
+    }
 
     [HttpGet("{page:min(1)}/{perPage:min(1)}")]
     public async Task<ActionResult<ArticlePaginationModel>> GetArticles([FromRoute] int page, int perPage)

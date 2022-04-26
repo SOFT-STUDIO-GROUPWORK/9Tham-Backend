@@ -9,4 +9,6 @@ public class ArticlePaginationModel
     public int LastPage { get; set; }
 
     public int CurrentPage { get; set; }
+    
+    public int TotalArticles { get; set; }
 }
