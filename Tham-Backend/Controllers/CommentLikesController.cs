@@ -46,7 +46,7 @@ public class CommentLikesController : ControllerBase
         return CreatedAtAction(nameof(GetCommentLikeById), new {id = commentLikeId}, commentLikeId);
     }
     
-    [HttpGet("/toggleLikes/{commentId:min(1)}/{bloggerId:min(1)}")]
+    [HttpGet("toggleLikes/{commentId:min(1)}/{bloggerId:min(1)}")]
     [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> ToggleLike([FromRoute] int commentId, [FromRoute] int bloggerId, [FromServices]ICommentRepository commentRepository)
     {
