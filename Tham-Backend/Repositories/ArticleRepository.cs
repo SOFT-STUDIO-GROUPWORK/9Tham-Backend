@@ -99,7 +99,7 @@ public class ArticleRepository : IArticleRepository
             article.ViewCount++;
             await _context.SaveChangesAsync();
         }
-        return _mapper.Map<Articles>(article);
+        return article;
     }
     
     public async Task<int> AddArticleAsync(ArticleModel articleModel)

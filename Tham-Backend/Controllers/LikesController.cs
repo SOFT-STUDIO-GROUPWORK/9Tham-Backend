@@ -37,6 +37,33 @@ public class LikesController : ControllerBase
 
         return Ok(like);
     }
+    
+    [HttpGet("/toggleLikes/{articleId:min(1)}/{bloggerId:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
+    public async Task<IActionResult> ToggleLike([FromRoute] int articleId, [FromRoute] int bloggerId, [FromServices]IArticleRepository articleRepository, [FromServices]ILikeRepository likeRepository)
+    {
+        var article = await articleRepository.GetArticleByIdAsync(articleId);
+        if (article is null) return NotFound();
+        
+        var matchedLike = article.Likes.Find(like => like.BloggerId == bloggerId);
+        if (matchedLike is null)
+        {
+            //add like
+            var likeModel = new LikeModel()
+            {
+                    ArticleId = articleId,
+                    BloggerId = bloggerId
+            };
+            await likeRepository.AddLikeAsync(likeModel);
+        }
+        else
+        {
+            //remove like
+            await likeRepository.DeleteLikeAsync(matchedLike.Id);
+        }
+
+        return Ok();
+    }
 
     [HttpPost]
     [Authorize(Roles = "Admin,User")]
