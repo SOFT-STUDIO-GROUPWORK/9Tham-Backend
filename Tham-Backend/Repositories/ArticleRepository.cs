@@ -27,13 +27,14 @@ public class ArticleRepository : IArticleRepository
         var pageCount = Math.Ceiling(_context.Articles.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
 
-        var articles = await _context.Articles.Skip((page - 1) * (int) perPage).Take((int)perPage).Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).ToListAsync();
+        var articles = await _context.Articles.Skip((page - 1) * (int) perPage).Take((int)perPage).Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).Where(e => e.Visible==true).ToListAsync();
         var response = new ArticlePaginationModel()
         {
             Articles = _mapper.Map<List<Articles>>(articles),
             CurrentPage = page,
             FirstPage = 1,
-            LastPage = (int) pageCount
+            LastPage = (int) pageCount,
+            TotalArticles = articles.Count
         };
         return response;
     }
@@ -42,7 +43,7 @@ public class ArticleRepository : IArticleRepository
     {
         var pageCount = Math.Ceiling(_context.Articles.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
-        var reverseDB = await _context.Articles.Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).ToListAsync();
+        var reverseDB = await _context.Articles.Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).Where(e => e.Visible==true).ToListAsync();
         reverseDB = Enumerable.Reverse(reverseDB).ToList();
         var articles = reverseDB.Skip((page - 1) * (int) perPage).Take((int) perPage);
         var response = new ArticlePaginationModel()
@@ -50,14 +51,15 @@ public class ArticleRepository : IArticleRepository
             Articles = _mapper.Map<List<Articles>>(articles),
             CurrentPage = page,
             FirstPage = 1,
-            LastPage = (int) pageCount
+            LastPage = (int) pageCount,
+            TotalArticles = articles.Count()
         };
         return response;
     }
     
     public async Task<ArticlePaginationModel> SearchArticlesPaginated(int page,float perPage, string search)
     {
-        var qureyWhere = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).Where(e => e.Title.Contains(search) || e.Content.Contains(search)).ToListAsync();
+        var qureyWhere = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).Where(e => e.Title.Contains(search) || e.Content.Contains(search)).Where(e => e.Visible==true).ToListAsync();
         var pageCount = Math.Ceiling(qureyWhere.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
 
@@ -67,14 +69,15 @@ public class ArticleRepository : IArticleRepository
             Articles = _mapper.Map<List<Articles>>(articles),
             CurrentPage = page,
             FirstPage = 1,
-            LastPage = (int) pageCount
+            LastPage = (int) pageCount,
+            TotalArticles = articles.Count()
         };
         return response;
     }
     
     public async Task<ArticlePaginationModel> SearchReverseArticlesPaginated(int page,float perPage, string search)
     {
-        var reverseDB = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).Where(e => e.Title.Contains(search) || e.Content.Contains(search)).ToListAsync();
+        var reverseDB = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).Where(e => e.Title.Contains(search) || e.Content.Contains(search)).Where(e => e.Visible==true).ToListAsync();
         reverseDB = Enumerable.Reverse(reverseDB).ToList();
         var pageCount = Math.Ceiling(reverseDB.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
@@ -85,7 +88,8 @@ public class ArticleRepository : IArticleRepository
             Articles = _mapper.Map<List<Articles>>(articles),
             CurrentPage = page,
             FirstPage = 1,
-            LastPage = (int) pageCount
+            LastPage = (int) pageCount,
+            TotalArticles = articles.Count()
         };
         return response;
     }
