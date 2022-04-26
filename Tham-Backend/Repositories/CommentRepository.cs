@@ -21,7 +21,7 @@ public class CommentRepository:ICommentRepository
 
     public async Task<Comments?> GetCommentByIdAsync(int commentId)
     {
-        var record = await _context.Comments.FindAsync(commentId);
+        var record = await _context.Comments.Include(c=>c.CommentLikes).FirstOrDefaultAsync(c=>c.Id==commentId);
         return _mapper.Map<Comments>(record);
     }
 
