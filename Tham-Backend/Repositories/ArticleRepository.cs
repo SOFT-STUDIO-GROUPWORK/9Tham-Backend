@@ -71,8 +71,10 @@ public class ArticleRepository : IArticleRepository
         }
         if (tagId is not null)
         {
-            queryWhere = await tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId))).ToListAsync();
+            tempQuery = tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId)));
         }
+        
+        queryWhere = await tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId))).ToListAsync();
 
         var pageCount = Math.Ceiling(queryWhere.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
@@ -103,8 +105,10 @@ public class ArticleRepository : IArticleRepository
         }
         if (tagId is not null)
         {
-            queryWhere = await tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId))).ToListAsync();
+            tempQuery = tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId)));
         }
+        
+        queryWhere = await tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId))).ToListAsync();
         
         queryWhere = Enumerable.Reverse(queryWhere).ToList();
         var pageCount = Math.Ceiling(queryWhere.Count() / perPage);
