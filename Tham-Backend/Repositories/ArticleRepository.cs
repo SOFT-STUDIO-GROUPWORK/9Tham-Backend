@@ -57,7 +57,7 @@ public class ArticleRepository : IArticleRepository
         return response;
     }
     
-    public async Task<ArticlePaginationModel> SearchArticlesPaginated(int page,float perPage, string search, string tagId)
+    public async Task<ArticlePaginationModel> SearchArticlesPaginated(int page,float perPage, string search)
     {
         var queryWhere = new List<Articles>();
         
@@ -69,12 +69,8 @@ public class ArticleRepository : IArticleRepository
         {
             tempQuery = tempQuery.Where(e => e.Title.Contains(search) || e.Content.Contains(search));
         }
-        if (tagId != "")
-        {
-            tempQuery = tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId)));
-        }
-        
-        queryWhere = await tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId))).ToListAsync();
+
+        queryWhere = await tempQuery.ToListAsync();
 
         var pageCount = Math.Ceiling(queryWhere.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
@@ -91,7 +87,7 @@ public class ArticleRepository : IArticleRepository
         return response;
     }
     
-    public async Task<ArticlePaginationModel> SearchReverseArticlesPaginated(int page,float perPage, string search, string tagId)
+    public async Task<ArticlePaginationModel> SearchReverseArticlesPaginated(int page,float perPage, string search)
     {
         var queryWhere = new List<Articles>();
         
@@ -103,12 +99,8 @@ public class ArticleRepository : IArticleRepository
         {
             tempQuery = tempQuery.Where(e => e.Title.Contains(search) || e.Content.Contains(search));
         }
-        if (tagId != "")
-        {
-            tempQuery = tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId)));
-        }
-        
-        queryWhere = await tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId))).ToListAsync();
+
+        queryWhere = await tempQuery.ToListAsync();
         
         queryWhere = Enumerable.Reverse(queryWhere).ToList();
         var pageCount = Math.Ceiling(queryWhere.Count() / perPage);
