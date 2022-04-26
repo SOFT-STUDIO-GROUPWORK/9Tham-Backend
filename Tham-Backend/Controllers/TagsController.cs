@@ -47,6 +47,20 @@ public class TagsController : ControllerBase
         return Ok(tag);
     }
     
+    [HttpGet("{id:min(1)}/articles")]
+    public async Task<ActionResult<List<Articles>>> GetArticleByTagId([FromRoute]int id, [FromServices]IArticleRepository articleRepository)
+    {
+        var tag = await _repository.GetTagByIdAsync(id);
+        if (tag is null)
+        {
+            return NotFound("Tag not found!");
+        }
+
+        var articles = await articleRepository.GetArticlesAsync();
+        var result = articles.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == id)).ToList();
+        return Ok(result);
+    }
+    
     [HttpPost]
     [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> AddTag([FromBody] TagModel tagModel)
