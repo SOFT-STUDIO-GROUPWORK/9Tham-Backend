@@ -18,7 +18,7 @@ public class ArticleRepository : IArticleRepository
 
     public async Task<List<Articles>> GetArticlesAsync()
     {
-        var records = await _context.Articles.Include(a=>a.ArticleTags).ToListAsync();
+        var records = await _context.Articles.Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).ToListAsync();
         return _mapper.Map<List<Articles>>(records);
     }
 
@@ -93,7 +93,7 @@ public class ArticleRepository : IArticleRepository
     public async Task<Articles?> GetArticleByIdAsync(int articleId)
     {
         //FIXME: Comments list is not included in the response
-        var article = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.ArticleTags).Include(a=>a.Comments).FirstOrDefaultAsync(x=>x.Id==articleId);
+        var article = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).Include(a=>a.Comments).FirstOrDefaultAsync(x=>x.Id==articleId);
         if (article is not null)
         {
             article.ViewCount++;
