@@ -57,7 +57,7 @@ public class ArticleRepository : IArticleRepository
         return response;
     }
     
-    public async Task<ArticlePaginationModel> SearchArticlesPaginated(int page,float perPage, string? search, string? tagId)
+    public async Task<ArticlePaginationModel> SearchArticlesPaginated(int page,float perPage, string search, string tagId)
     {
         var queryWhere = new List<Articles>();
         
@@ -65,11 +65,11 @@ public class ArticleRepository : IArticleRepository
             .Include(a => a.ArticleTags).ThenInclude(at => at.Tag)
             .Where(e => e.Visible == true);
 
-        if (string.IsNullOrEmpty(search))
+        if (search != "")
         {
             tempQuery = tempQuery.Where(e => e.Title.Contains(search) || e.Content.Contains(search));
         }
-        if (string.IsNullOrEmpty(tagId))
+        if (tagId != "")
         {
             tempQuery = tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId)));
         }
@@ -91,7 +91,7 @@ public class ArticleRepository : IArticleRepository
         return response;
     }
     
-    public async Task<ArticlePaginationModel> SearchReverseArticlesPaginated(int page,float perPage, string? search, string? tagId)
+    public async Task<ArticlePaginationModel> SearchReverseArticlesPaginated(int page,float perPage, string search, string tagId)
     {
         var queryWhere = new List<Articles>();
         
@@ -99,11 +99,11 @@ public class ArticleRepository : IArticleRepository
             .Include(a => a.ArticleTags).ThenInclude(at => at.Tag)
             .Where(e => e.Visible == true);
 
-        if (string.IsNullOrEmpty(search))
+        if (search != "")
         {
             tempQuery = tempQuery.Where(e => e.Title.Contains(search) || e.Content.Contains(search));
         }
-        if (string.IsNullOrEmpty(tagId))
+        if (tagId != "")
         {
             tempQuery = tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId)));
         }
