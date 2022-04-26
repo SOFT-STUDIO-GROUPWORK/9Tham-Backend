@@ -57,13 +57,27 @@ public class ArticleRepository : IArticleRepository
         return response;
     }
     
-    public async Task<ArticlePaginationModel> SearchArticlesPaginated(int page,float perPage, string search)
+    public async Task<ArticlePaginationModel> SearchArticlesPaginated(int page,float perPage, string? search, string? tagId)
     {
-        var qureyWhere = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).Where(e => e.Title.Contains(search) || e.Content.Contains(search)).Where(e => e.Visible==true).ToListAsync();
-        var pageCount = Math.Ceiling(qureyWhere.Count() / perPage);
+        var queryWhere = new List<Articles>();
+        
+        var tempQuery = _context.Articles.Include(a => a.Blogger)
+            .Include(a => a.ArticleTags).ThenInclude(at => at.Tag)
+            .Where(e => e.Visible == true);
+
+        if (search is not null)
+        {
+            tempQuery = tempQuery.Where(e => e.Title.Contains(search) || e.Content.Contains(search));
+        }
+        if (tagId is not null)
+        {
+            queryWhere = await tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId))).ToListAsync();
+        }
+
+        var pageCount = Math.Ceiling(queryWhere.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
 
-        var articles = qureyWhere.Skip((page - 1) * (int) perPage).Take((int)perPage);
+        var articles = queryWhere.Skip((page - 1) * (int) perPage).Take((int)perPage);
         var response = new ArticlePaginationModel()
         {
             Articles = _mapper.Map<List<Articles>>(articles),
@@ -75,14 +89,28 @@ public class ArticleRepository : IArticleRepository
         return response;
     }
     
-    public async Task<ArticlePaginationModel> SearchReverseArticlesPaginated(int page,float perPage, string search)
+    public async Task<ArticlePaginationModel> SearchReverseArticlesPaginated(int page,float perPage, string? search, string? tagId)
     {
-        var reverseDB = await _context.Articles.Include(a=>a.Blogger).Include(a=>a.ArticleTags).ThenInclude(at=>at.Tag).Where(e => e.Title.Contains(search) || e.Content.Contains(search)).Where(e => e.Visible==true).ToListAsync();
-        reverseDB = Enumerable.Reverse(reverseDB).ToList();
-        var pageCount = Math.Ceiling(reverseDB.Count() / perPage);
+        var queryWhere = new List<Articles>();
+        
+        var tempQuery = _context.Articles.Include(a => a.Blogger)
+            .Include(a => a.ArticleTags).ThenInclude(at => at.Tag)
+            .Where(e => e.Visible == true);
+
+        if (search is not null)
+        {
+            tempQuery = tempQuery.Where(e => e.Title.Contains(search) || e.Content.Contains(search));
+        }
+        if (tagId is not null)
+        {
+            queryWhere = await tempQuery.Where(article => article.ArticleTags.Any(articleTag => articleTag.TagId == int.Parse(tagId))).ToListAsync();
+        }
+        
+        queryWhere = Enumerable.Reverse(queryWhere).ToList();
+        var pageCount = Math.Ceiling(queryWhere.Count() / perPage);
         if (pageCount == 0) pageCount = 1;
 
-        var articles = reverseDB.Skip((page - 1) * (int) perPage).Take((int)perPage);
+        var articles = queryWhere.Skip((page - 1) * (int) perPage).Take((int)perPage);
         var response = new ArticlePaginationModel()
         {
             Articles = _mapper.Map<List<Articles>>(articles),
