@@ -39,7 +39,6 @@ public class AnnouncementController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Put([FromRoute] int id, [FromBody] AnnouncementModel announcementModel)
     {
         await _repository.UpdateAnnouncementAsync(id, announcementModel);
