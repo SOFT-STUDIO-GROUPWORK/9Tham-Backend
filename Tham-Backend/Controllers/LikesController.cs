@@ -38,7 +38,7 @@ public class LikesController : ControllerBase
         return Ok(like);
     }
     
-    [HttpGet("/toggleLikes/{articleId:min(1)}/{bloggerId:min(1)}")]
+    [HttpGet("toggleLikes/{articleId:min(1)}/{bloggerId:min(1)}")]
     [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> ToggleLike([FromRoute] int articleId, [FromRoute] int bloggerId, [FromServices]IArticleRepository articleRepository)
     {

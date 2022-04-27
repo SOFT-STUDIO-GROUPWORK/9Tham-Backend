@@ -49,9 +49,9 @@ public class CommentsController : ControllerBase
     [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> UpdateComment([FromRoute] int id, [FromBody] CommentModel commentModel,  [FromServices]IBloggerRepository bloggerRepository)
     {
-        var oldComment = await _repository.GetCommentByIdAsync(id);
+        /*var oldComment = await _repository.GetCommentByIdAsync(id);
         if (oldComment is not null)
-        { 
+        {
             var user = await bloggerRepository.GetBloggerByIdAsync((int) oldComment.BloggerId);
             if (user is not null)
             {
@@ -63,8 +63,11 @@ public class CommentsController : ControllerBase
                 return Ok();
             }
         }
-
-        return NotFound();
+        
+        return NotFound();*/
+        
+        await _repository.UpdateCommentAsync(id, commentModel);
+        return Ok();
     }
 
     [HttpDelete("{id:min(1)}")]
