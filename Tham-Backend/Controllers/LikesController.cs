@@ -38,7 +38,7 @@ public class LikesController : ControllerBase
         return Ok(like);
     }
     
-    [HttpPost]
+    [HttpGet("toggleLikes/{articleId:min(1)}/{bloggerId:min(1)}")]
     [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> ToggleLike([FromRoute] int articleId, [FromRoute] int bloggerId, [FromServices]IArticleRepository articleRepository)
     {
@@ -65,7 +65,7 @@ public class LikesController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("{id:min(1)}")]
+    [HttpPost]
     [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> AddLike([FromBody] LikeModel likeModel)
     {
@@ -73,7 +73,7 @@ public class LikesController : ControllerBase
         return CreatedAtAction(nameof(GetLikeById), new {id = likeId}, likeId);
     }
 
-    [HttpGet("toggleLikes/{articleId:min(1)}/{bloggerId:min(1)}")]
+    [HttpPut("{id:min(1)}")]
     [Authorize(Roles = "Admin,User")]
     public async Task<IActionResult> UpdateLike([FromRoute] int id, [FromBody] LikeModel likeModel,[FromServices]IBloggerRepository bloggerRepository)
     {
