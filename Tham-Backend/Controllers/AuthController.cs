@@ -114,6 +114,7 @@ public class AuthController : ControllerBase
         }
         
         if (user is null) return NotFound("User not found!");
+        if (user.IsBanned) return Unauthorized("You are banned");
 
         if (!_authService.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
             return BadRequest("Wrong password.");
