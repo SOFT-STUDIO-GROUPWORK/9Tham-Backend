@@ -1,73 +1,89 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Tham_Backend.Models;
+using Tham_Backend.Repositories;
 
 namespace Tham_Backend.Controllers;
 
-[Route("[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class ArticlesController : ControllerBase
 {
-    private readonly DataContext _context;
+    private readonly IArticleRepository _repository;
 
-    public ArticlesController(DataContext context)
+    public ArticlesController(IArticleRepository repository)
     {
-        _context = context;
+        _repository = repository;
     }
 
-    [HttpGet("paginate/{page}")]
-    public async Task<ActionResult<List<Article>>> GetArticles(int page)
+    [HttpGet]
+    public async Task<ActionResult<List<Articles>>> GetArticles()
     {
-        var perPage = 10f;
-        var pageCount = Math.Ceiling(_context.Articles.Count() / perPage);
-        if (pageCount == 0) pageCount = 1;
-        var articles = await _context.Articles.Skip((page - 1) * (int) perPage).Take(page).ToListAsync();
-        var response = new ArticleResponse
+        var articles = await _repository.GetArticlesAsync();
+        return Ok(articles);
+    }
+    
+    [HttpGet("{search}/{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<ArticlePaginationModel>> SearchArticles(int page, int perPage,string search )
+    {
+        var articles = await _repository.SearchArticlesPaginated(page,(float)perPage,search);
+        return Ok(articles);
+    }
+    
+    [HttpGet("{search}/reverse/{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<ArticlePaginationModel>> SearchReverseArticles(int page, int perPage, string search)
+    {
+        var articles = await _repository.SearchReverseArticlesPaginated(page,(float)perPage,search);
+        return Ok(articles);
+    }
+
+    [HttpGet("{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<ArticlePaginationModel>> GetArticles([FromRoute] int page, int perPage)
+    {
+        var articles = await _repository.GetArticlesPaginated(page,(float)perPage);
+        return Ok(articles);
+    }
+    
+    [HttpGet("reverse/{page:min(1)}/{perPage:min(1)}")]
+    public async Task<ActionResult<ArticlePaginationModel>> GetReverseArticles([FromRoute] int page, int perPage)
+    {
+        var articles = await _repository.GetReverseArticlesPaginated(page,(float)perPage);
+        return Ok(articles);
+    }
+
+    [HttpGet("{id:min(1)}")]
+    public async Task<ActionResult<Articles>> GetArticle([FromRoute] int id)
+    {
+        var article = await _repository.GetArticleByIdAsync(id);
+        if (article is null)
         {
-            Articles = articles,
-            CurrentPage = page,
-            Pages = (int) pageCount
-        };
-
-        return Ok(response);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Article>> GetArticle(int id)
-    {
-        var article = await _context.Articles.FindAsync(id);
-        if (article == null) return BadRequest("Article not found!");
+            return NotFound("Article not found!");
+        }
         return Ok(article);
     }
 
     [HttpPost]
-    public async Task<ActionResult<List<Article>>> AddArticle([FromBody] Article article)
+    [Authorize(Roles = "Admin,User")]
+    public async Task<ActionResult<Articles>> AddArticle([FromBody] ArticleModel article)
     {
-        _context.Articles.Add(article);
-        await _context.SaveChangesAsync();
-        return Ok(article);
+        var articleId = await _repository.AddArticleAsync(article);
+        return CreatedAtAction(nameof(GetArticle), new {id = articleId}, articleId);
     }
 
-    [HttpPut]
-    public async Task<ActionResult<List<Article>>> UpdateArticle([FromBody] Article request)
+    [HttpPut("{id:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
+    public async Task<ActionResult<Articles>> UpdateArticle([FromRoute] int id,
+        [FromBody] ArticleModel articleModel)
     {
-        var dbArticle = await _context.Articles.FindAsync(request.Id);
-        if (dbArticle == null) return BadRequest("Article not found!");
-        dbArticle.Content = request.Content;
-        dbArticle.Title = request.Title;
-        dbArticle.Visible = request.Visible;
-        dbArticle.BloggerId = request.BloggerId;
-        await _context.SaveChangesAsync();
-        return Ok(dbArticle);
+        await _repository.UpdateArticleAsync(id, articleModel);
+        return Ok();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<Article>> DeleteArticle(int id)
+    [HttpDelete("{id:min(1)}")]
+    [Authorize(Roles = "Admin,User")]
+    public async Task<ActionResult<Articles>> DeleteArticle([FromRoute] int id)
     {
-        var dbArticle = await _context.Articles.FindAsync(id);
-        if (dbArticle == null) return BadRequest("Article not found!");
-        _context.Articles.Remove(dbArticle);
-        await _context.SaveChangesAsync();
-        return Ok(dbArticle);
+        await _repository.DeleteArticleAsync(id);
+        return Ok();
     }
 }
